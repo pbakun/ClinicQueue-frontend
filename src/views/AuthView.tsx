@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Paper, Typography, Button, withStyles, Theme, createStyles, TextField, Checkbox, FormControlLabel } from "@material-ui/core";
 import backgroundImg from "../images/background.jpg";
 import ForgotPassword from '../components/Auth/ForgotPassword';
+import instance from "../config/axios";
+import Cookies from "js-cookie";
+import { identityToken } from "../utils/staticData";
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -71,6 +74,28 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const handleLogin = (e: any) => {
+        let config = {
+            headers: {
+            'Content-type': "application/json"
+            },
+            withCredentials: true
+        }
+        instance.post("auth/login", {username: username, password: password}, config)
+                .then(response => console.log('response', response));
+    }
+
+    const handleTest = () => {
+        let config = {
+            headers: {
+                'Content-type': "application/json",
+            },
+            withCredentials: true
+        }
+        instance.get("/doctor", config)
+                .then(response => console.log('response', response));
+    }
+
   return (
     <Wrapper>
         <div className={classes.box}>
@@ -78,7 +103,7 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
                 <Typography variant="h4" gutterBottom>
                     System kolejkowy
                 </Typography>
-                <Typography 
+                <Typography
                     variant="h6"
                     style={{fontWeight: 400,}}
                 >
@@ -110,7 +135,7 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
                         <FormControlLabel
                             value={true}
                             control={
-                                <Checkbox 
+                                <Checkbox
                                     color="primary"
                                     onChange={e => console.log('e', e.target.value)} />
                             }
@@ -123,9 +148,11 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
                         variant="contained"
                         color="primary"
                         className={classes.button}
+                        onClick={handleLogin}
                     >
                         Zaloguj
                     </Button>
+                    <Button onClick={handleTest}>Test</Button>
                 </form>
         </Paper>
         </div>
