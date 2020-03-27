@@ -28,10 +28,19 @@ export const logout = () => {
 		username: ""
 	};
 	return (dispatch: Dispatch<RootActions>) => {
-		dispatch({
-			type: type.LOGIN,
-			payload: data
-		});
+		instance
+			.post(
+				"auth/logout",
+				{ },
+				config
+			)
+			.then(response => {
+				dispatch({
+					type: type.LOGIN,
+					payload: data
+				})
+			})
+			.catch(err => console.error(err));
 	};
 };
 

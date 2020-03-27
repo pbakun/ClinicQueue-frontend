@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
-import {compose} from "redux";
+import { compose } from "redux";
 import { connect } from "react-redux";
-import {RootActions} from "../store/actions";
+import { RootActions } from "../store/actions";
 import { Paper, Typography, Button, withStyles, Theme, createStyles, TextField, Checkbox, FormControlLabel } from "@material-ui/core";
 import backgroundImg from "../images/background.jpg";
 import ForgotPassword from '../components/Auth/ForgotPassword';
@@ -88,72 +88,77 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    const handleLogin = (e: any) => {
-        if(props.auth)
-            props.auth("piotr","dupa");
+    const handleLogin = () => {
+        if (props.auth)
+            props.auth(username, password);
     }
 
-  return (
-    <Wrapper>
-        <div className={classes.box}>
-        <Paper elevation={4} className={classes.paper}>
-                <Typography variant="h4" gutterBottom>
-                    System kolejkowy
+    const handleKeyUp = (e: any) => {
+        if(e.key === "Enter")
+            handleLogin();
+    }
+
+    return (
+        <Wrapper>
+            <div className={classes.box}>
+                <Paper elevation={4} className={classes.paper}>
+                    <Typography variant="h4" gutterBottom>
+                        System kolejkowy
                 </Typography>
-                <Typography
-                    variant="h6"
-                    style={{fontWeight: 400,}}
-                >
-                    Logowanie
-                </Typography>
-                <form className={classes.form}>
-                    <TextField
-                        label="Użytkownik"
-                        name="username"
-                        color="primary"
-                        variant="filled"
-                        fullWidth
-                        className={classes.field}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <TextField
-                        label="Hasło"
-                        name="password"
-                        type="password"
-                        color="primary"
-                        variant="filled"
-                        fullWidth
-                        className={classes.field}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <div className={classes.options}>
-                        <FormControlLabel
-                            value={true}
-                            control={
-                                <Checkbox
-                                    color="primary"
-                                    onChange={e => console.log('e', e.target.value)} />
-                            }
-                            label="Zapamiętaj mnie"
-                            labelPlacement="end"
-                        />
-                        <ForgotPassword />
-                    </div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={handleLogin}
+                    <Typography
+                        variant="h6"
+                        style={{ fontWeight: 400, }}
                     >
-                        Zaloguj
+                        Logowanie
+                </Typography>
+                    <form className={classes.form} onKeyUp={handleKeyUp}>
+                        <TextField
+                            label="Użytkownik"
+                            name="username"
+                            color="primary"
+                            variant="filled"
+                            fullWidth
+                            className={classes.field}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <TextField
+                            label="Hasło"
+                            name="password"
+                            type="password"
+                            color="primary"
+                            variant="filled"
+                            fullWidth
+                            className={classes.field}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <div className={classes.options}>
+                            <FormControlLabel
+                                value={true}
+                                control={
+                                    <Checkbox
+                                        color="primary"
+                                        onChange={e => console.log('e', e.target.value)} />
+                                }
+                                label="Zapamiętaj mnie"
+                                labelPlacement="end"
+                            />
+                            <ForgotPassword />
+                        </div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onClick={handleLogin}
+                        >
+                            Zaloguj
                     </Button>
-                </form>
-        </Paper>
-        </div>
-    </Wrapper>
-  );
+                    </form>
+                </Paper>
+            </div>
+        </Wrapper>
+    );
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
@@ -162,8 +167,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<any, any, RootActions>, ownProps: OwnProps
-    ) => ({
-        auth: (username: string, password: string) => dispatch(auth(username, password)),
+) => ({
+    auth: (username: string, password: string) => dispatch(auth(username, password)),
 })
 
 export default compose(
@@ -172,4 +177,4 @@ export default compose(
         mapStateToProps,
         mapDispatchToProps
     )
-    )(AuthView) as React.ComponentType<AuthViewProps>;
+)(AuthView) as React.ComponentType<AuthViewProps>;
