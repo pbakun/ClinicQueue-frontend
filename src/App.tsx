@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import './App.css';
+import { connect } from "react-redux";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { teal, lightBlue } from "@material-ui/core/colors"
-import { Patient } from "./components/Patient";
+import { teal, lightBlue } from "@material-ui/core/colors";
+import { RootState } from "./store/reducers";
+import { RootActions } from "./store/actions";
 import { Routes } from "./views/Routes";
 import AuthView from './views/AuthView';
+import { ThunkDispatch } from 'redux-thunk';
+import { checkLoggedIn } from './store/auth/authActions';
 
 interface IAppProps {
-  // token: string
+	isLogged: boolean,
+	checkLoggedIn: () => void
 }
 
 const StyledApp = styled.div`
@@ -18,29 +23,52 @@ const StyledApp = styled.div`
 `;
 
 const theme = createMuiTheme({
-  palette: {
-    primary: teal,
-    secondary: lightBlue,
-    background: {
-      paper: "#FFF",
-      default: "rgba(248, 248, 248, 0.93)"
-    }
-  }
+	palette: {
+		primary: teal,
+		secondary: lightBlue,
+		background: {
+			paper: "#FFF",
+			default: "rgba(248, 248, 248, 0.93)"
+		}
+	}
 });
 
 
 function App(props: IAppProps) {
-  // const { token } = props; 
-  const token = null;
+	const { isLogged } = props;
+	const token = null;
 
+	useEffect(() => {
+		console.log("effect");
+		props.checkLoggedIn();
+	}, [])
 
-  return (
-    <StyledApp>
-      <ThemeProvider theme={theme}>
-        {!token ? <AuthView /> : <Routes token="lala" />}
-      </ThemeProvider>
-    </StyledApp>
-  );
+	useEffect(() => {
+		console.log('isLogged :', isLogged);
+	}, [isLogged]);
+
+	return (
+		<StyledApp>
+			<ThemeProvider theme={theme}>
+				{!isLogged ? <AuthView /> : <Routes />}
+			</ThemeProvider>
+		</StyledApp>
+	);
 }
 
-export default App;
+const mapStateToProps = (state: RootState) => {
+	return {
+		isLogged: state.auth.isLogged
+	}
+}
+
+const mapDispatchToProps = (
+	dispatch: ThunkDispatch<any, any, RootActions>
+) => ({
+	checkLoggedIn: () => dispatch(checkLoggedIn()),
+})
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(App);

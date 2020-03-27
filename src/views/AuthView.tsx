@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
+import {compose} from "redux";
+import { connect } from "react-redux";
+import {RootActions} from "../store/actions";
 import { Paper, Typography, Button, withStyles, Theme, createStyles, TextField, Checkbox, FormControlLabel } from "@material-ui/core";
 import backgroundImg from "../images/background.jpg";
 import ForgotPassword from '../components/Auth/ForgotPassword';
-import instance from "../config/axios";
-import Cookies from "js-cookie";
-import { identityToken } from "../utils/staticData";
+import { RootState } from '../store/reducers';
+import { ThunkDispatch } from 'redux-thunk';
+import { auth } from '../store/auth/authActions';
+
+interface MuiProps {
+    classes?: any
+}
+
+interface OwnProps {
+    exampleInputProp?: string
+}
+
+interface StoreProps {
+    isLogged?: boolean
+    auth?: (username: string, password: string) => void
+}
+
+type AuthViewProps = MuiProps & OwnProps & StoreProps;
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -17,10 +35,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
 `;
-
-interface IAuthViewProps {
-    classes: any,
-}
 
 const useStyles = ((theme: Theme) => createStyles({
     box: {
@@ -69,31 +83,14 @@ const useStyles = ((theme: Theme) => createStyles({
     }
 }));
 
-const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
+const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
     const { classes } = props;
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
     const handleLogin = (e: any) => {
-        let config = {
-            headers: {
-            'Content-type': "application/json"
-            },
-            withCredentials: true
-        }
-        instance.post("auth/login", {username: username, password: password}, config)
-                .then(response => console.log('response', response));
-    }
-
-    const handleTest = () => {
-        let config = {
-            headers: {
-                'Content-type': "application/json",
-            },
-            withCredentials: true
-        }
-        instance.get("/doctor", config)
-                .then(response => console.log('response', response));
+        if(props.auth)
+            props.auth("piotr","dupa");
     }
 
   return (
@@ -152,7 +149,6 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
                     >
                         Zaloguj
                     </Button>
-                    <Button onClick={handleTest}>Test</Button>
                 </form>
         </Paper>
         </div>
@@ -160,4 +156,20 @@ const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
   );
 };
 
-export default withStyles(useStyles)(AuthView);
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+    isLogged: state.auth.isLogged
+})
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<any, any, RootActions>, ownProps: OwnProps
+    ) => ({
+        auth: (username: string, password: string) => dispatch(auth(username, password)),
+})
+
+export default compose(
+    withStyles(useStyles),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )
+    )(AuthView) as React.ComponentType<AuthViewProps>;
