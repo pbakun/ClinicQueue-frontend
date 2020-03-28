@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles, Theme, createStyles, Typography, Divider, Grid } from "@material-ui/core";
 import QueueNo from '../components/Doctor/QueueNo';
 import NewNo from '../components/Doctor/NewNo';
@@ -6,7 +6,8 @@ import NewRoomNo from '../components/Doctor/NewRoomNo';
 import SpecialButtons from '../components/Doctor/SpecialButtons';
 import Message from '../components/Doctor/Message';
 import { get, put } from '../config/request';
-import { QueueHub } from '../hub/connection';
+import { IQueueContext } from '../contexts/hub/IQueueContext';
+import { HubContext } from '../contexts/hub/HubContext';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     container: {
@@ -46,23 +47,48 @@ const fetchData = (data: any): IQueueData => ({
 function DoctorView() {
     const classes = useStyles();
     const [state, setState] = useState<IQueueData>(initialState);
-    let hub: QueueHub|null = null;
-
-    const onNewQueueNo = (msg: string) => {
-        console.log('queuemsg :', msg);
-    }
+    const hubContext = useContext<IQueueContext>(HubContext);
 
     useEffect(() => {
         get(
             "/doctor",
-            (response: any) => {setState(fetchData(response.data))},
+            (response: any) => {
+                setState(fetchData(response.data));
+                hubContext.register(response.data.userId, response.data.roomNo);
+            },
             (error: any) => console.error(error)
             );
-            hub = new QueueHub(onNewQueueNo);
-            return () => {
-                hub?.hubStop();
-            }
+        return function cleanup() {
+            hubContext.disconnect();
+        }
     }, []);
+
+    useEffect(() => {
+        setState({
+            ...state,
+            queueNoMessage: hubContext.queueMessage
+        });
+    }, [hubContext.queueMessage])
+
+    const handleNextNo = () => {
+        hubContext.nextNo(state.id, state.roomNo);
+    }
+
+    const handlePrevNo = () => {
+        hubContext.prevNo(state.id, state.roomNo);
+    }
+
+    const handleNewNo = (value: string) => {
+        hubContext.newNo(state.id, +value, state.roomNo);
+    }
+
+    const handleBreakClick = () => {
+        hubContext.newNo(state.id, -1, state.roomNo);
+    }
+
+    const handleSpecialClick = () => {
+        hubContext.newNo(state.id, -2, state.roomNo);
+    }
 
     const handleNewRoomNo = (value: string) => {
         put(
@@ -83,19 +109,19 @@ function DoctorView() {
                 <Grid item xs={12} sm={6} md={5}>
                     <QueueNo
                         queueMessage={state.queueNoMessage}
-                        onIncrement={() => console.log('onIncrement')}
-                        onDecrement={() => console.log('onDecrement')}
+                        onIncrement={handleNextNo}
+                        onDecrement={handlePrevNo}
                     />
                     <SpecialButtons
-                        onBreak={() => console.log("break")}
-                        onSpecial={() => console.log("special")}
+                        onBreak={handleBreakClick}
+                        onSpecial={handleSpecialClick}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={7}>
                     <Grid container>
                         <Grid item xs={12} md={6}>
                             <NewNo
-                                onSubmit={(value) => console.log(value)}
+                                onSubmit={handleNewNo}
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
