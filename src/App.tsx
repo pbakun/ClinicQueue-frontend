@@ -39,14 +39,9 @@ function App(props: IAppProps) {
 	const token = null;
 
 	useEffect(() => {
-		console.log("effect");
 		props.checkLoggedIn();
 	}, [])
-
-	useEffect(() => {
-		console.log('isLogged :', isLogged);
-	}, [isLogged]);
-
+	
 	return (
 		<StyledApp>
 			<ThemeProvider theme={theme}>

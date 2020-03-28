@@ -3,7 +3,9 @@ import { withStyles, createStyles, Button, Paper, Theme } from "@material-ui/cor
 
 
 interface ISpecialButtonsProps {
-    classes: any
+    classes: any,
+    onBreak: () => void,
+    onSpecial: () => void
 }
 
 const useStyles = ((theme: Theme) => createStyles({
@@ -32,22 +34,24 @@ const SpecialButtons: React.FunctionComponent<ISpecialButtonsProps> = (props) =>
   return (
     <Paper square className={classes.paper}>
         <div className={classes.container}>
-            <Button 
+            <Button
                 variant="contained"
                 color="secondary"
                 classes={{
                     root: classes.button
                 }}
                 style={{lineHeight: 3.5}}
+                onClick={props.onBreak}
             >
                 Przerwa
             </Button>
-            <Button 
+            <Button
                 variant="contained"
                 color="primary"
                 classes={{
                     root: classes.button
                 }}
+                onClick={props.onSpecial}
             >
                 Number specjalny
             </Button>

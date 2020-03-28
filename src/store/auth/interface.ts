@@ -3,6 +3,7 @@ import * as type from "../types";
 
 export interface AuthState {
     isLogged: boolean,
+    token?: string | undefined,
     username: string
 }
 

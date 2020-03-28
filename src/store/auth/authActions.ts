@@ -1,3 +1,4 @@
+import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
 import { AuthState } from "./interface";
 import { Dispatch } from "redux";
@@ -11,10 +12,11 @@ const config = {
 	withCredentials: true
 };
 
-export const login = (dispatch: Dispatch<RootActions>, username: string) => {
+export const login = (dispatch: Dispatch<RootActions>, username: string, token: string) => {
 	let data: AuthState = {
 		isLogged: true,
-		username: username
+		username: username,
+		token: token
 	};
 		dispatch({
 			type: type.LOGIN,
@@ -25,9 +27,10 @@ export const login = (dispatch: Dispatch<RootActions>, username: string) => {
 export const logout = () => {
 	let data: AuthState = {
 		isLogged: false,
-		username: ""
+		username: "",
+		token: undefined
 	};
-	return (dispatch: Dispatch<RootActions>) => {
+	return (dispatch: Dispatch<RootActions>, getState: () => RootState) => {
 		instance
 			.post(
 				"auth/logout",
@@ -53,7 +56,7 @@ export const auth = (username: string, password: string) => {
 				config
 			)
 			.then(response => {
-				login(dispatch, response.data.username);
+				login(dispatch, response.data.username, response.data.token);
 			})
 			.catch(err => console.error(err));
 	};
@@ -67,7 +70,8 @@ export const checkLoggedIn = () => {
 				config
 			)
 			.then(response => {
-				login(dispatch, response.data.username);
+				console.log('response', response)
+				login(dispatch, response.data.username, response.data.token);
 			})
 			.catch(err => console.error(err));
 

@@ -10,15 +10,39 @@ const config = {
     withCredentials: true
 }
 
+export const get = (
+    // dispatch: Dispatch<RootActions>,
+    url: string,
+    callback: (response: any) => void,
+    error: (error: any) => void
+) => {
+    instance
+        .get(url, config)
+        .then(callback)
+        .catch(error);
+}
+
 export const post = (
-        dispatch: Dispatch<RootActions>,
-        url: string,
-        body: any,
-        callback: (response: any) => void,
-        error: (error: any) => void
-    ) => {
-        instance
-            .post(url, body, config)
-            .then((response: any) => callback)
-            .catch((error: any) => error);
-    }
+    // dispatch: Dispatch<RootActions>,
+    url: string,
+    body: any,
+    callback: (response: any) => void,
+    error: (error: any) => void
+) => {
+    instance
+        .post(url, body, config)
+        .then(callback)
+        .catch(error);
+}
+
+export const put = (
+    url: string,
+    body: any,
+    callback: (response: any) => void,
+    error: (error: any) => void
+) => {
+    instance
+        .put(url, body, config)
+        .then(callback)
+        .catch(error);
+}

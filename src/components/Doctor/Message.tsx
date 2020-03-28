@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme, MenuItem } from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
@@ -7,6 +7,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 
 interface IMessageProps {
     classes: any,
+    additionalMessage?: string
 }
 
 const useStyles = ((theme: Theme) => createStyles({
@@ -41,7 +42,12 @@ const useStyles = ((theme: Theme) => createStyles({
 }));
 
 const Message: React.FunctionComponent<IMessageProps> = (props) => {
-    const { classes } = props;
+    const { classes, additionalMessage = "" } = props;
+    const [msg, setMsg] = useState<string>(additionalMessage)
+
+    useEffect(() => {
+        setMsg(additionalMessage);
+    }, [additionalMessage])
 
   return (
     <Paper square className={classes.paper}>
@@ -58,6 +64,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
             rows={3}
             fullWidth
             className={classes.inputField}
+            value={msg}
         />
         <div className={classes.buttons}>
             <Button
