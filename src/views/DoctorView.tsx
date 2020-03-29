@@ -1,13 +1,16 @@
 import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles, Theme, createStyles, Typography, Divider, Grid } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 import QueueNo from '../components/Doctor/QueueNo';
 import NewNo from '../components/Doctor/NewNo';
 import NewRoomNo from '../components/Doctor/NewRoomNo';
 import SpecialButtons from '../components/Doctor/SpecialButtons';
-import Message from '../components/Doctor/Message';
+import Message from '../components/Doctor/Message/Message';
 import { get, put } from '../config/request';
 import { IQueueContext } from '../contexts/hub/IQueueContext';
 import { HubContext } from '../contexts/hub/HubContext';
+import { AxiosError } from 'axios';
+import { serverErrorMessage, roomNoChangedMessage } from '../utils/staticData';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     container: {
@@ -46,6 +49,7 @@ const fetchData = (data: any): IQueueData => ({
 
 function DoctorView() {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const [state, setState] = useState<IQueueData>(initialState);
     const hubContext = useContext<IQueueContext>(HubContext);
 
@@ -56,7 +60,7 @@ function DoctorView() {
                 setState(fetchData(response.data));
                 hubContext.register(response.data.userId, response.data.roomNo);
             },
-            (error: any) => console.error(error)
+            () => enqueueSnackbar(serverErrorMessage, { variant: "error"})
             );
         return function cleanup() {
             hubContext.disconnect();
@@ -66,9 +70,16 @@ function DoctorView() {
     useEffect(() => {
         setState({
             ...state,
-            queueNoMessage: hubContext.queueMessage
+            queueNoMessage: hubContext.queueMessage,
         });
-    }, [hubContext.queueMessage])
+    }, [hubContext.queueMessage]);
+
+    useEffect(() => {
+        setState({
+            ...state,
+            additionalMessage: hubContext.additionalInfo,
+        });
+    }, [hubContext.additionalInfo]);
 
     const handleNextNo = () => {
         hubContext.nextNo(state.id, state.roomNo);
@@ -94,9 +105,20 @@ function DoctorView() {
         put(
             "/doctor/newroomno",
             { NewRoomNo: value },
-            (response: any) => console.log(response),
-            (error: any) => console.error(error)
+            (response: any) => {
+                hubContext.newRoomNo(state.id, value);
+                enqueueSnackbar(roomNoChangedMessage, { variant: "info"});
+                setState({
+                    ...state,
+                    roomNo: value,
+                });
+            },
+            () => enqueueSnackbar(serverErrorMessage, { variant: "error"})
         );
+    }
+
+    const handleSendAdditionalMessage = (value: string) => {
+        hubContext.newAdditionalInfo(state.id, state.roomNo, value);
     }
 
     return (
@@ -134,6 +156,7 @@ function DoctorView() {
                         <Grid item xs={12}>
                             <Message
                                 additionalMessage={state.additionalMessage}
+                                sendMessage={handleSendAdditionalMessage}
                             />
                         </Grid>
                     </Grid>

@@ -1,9 +1,11 @@
+import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
 import { AuthState } from "./interface";
 import { Dispatch } from "redux";
 import * as type from "../types";
 import instance from "../../config/axios";
+import { serverErrorMessage } from "../../utils/staticData";
 
 const config = {
 	headers: {
@@ -73,7 +75,9 @@ export const checkLoggedIn = () => {
 				console.log('response', response)
 				login(dispatch, response.data.username, response.data.token);
 			})
-			.catch(err => console.error(err));
-
+			.catch(err => {
+				console.log('err', err)
+			}
+		)
 	};
 }

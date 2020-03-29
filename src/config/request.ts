@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import instance from "./axios";
 import { RootActions } from "../store/actions";
 import { Dispatch } from "redux";
@@ -43,6 +43,18 @@ export const put = (
 ) => {
     instance
         .put(url, body, config)
+        .then(callback)
+        .catch(error);
+}
+
+export const remove = (
+    url: string,
+    data: any,
+    callback: (response: any) => void,
+    error: (error: AxiosError) => void
+) => {
+    instance
+        .delete(url, {...config, data: data})
         .then(callback)
         .catch(error);
 }

@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import './App.css';
 import { connect } from "react-redux";
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createMuiTheme, makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { teal, lightBlue } from "@material-ui/core/colors";
+import { SnackbarProvider } from "notistack";
 import { RootState } from "./store/reducers";
 import { RootActions } from "./store/actions";
 import { Routes } from "./views/Routes";
@@ -33,19 +34,31 @@ const theme = createMuiTheme({
 	}
 });
 
+const useStyles = makeStyles((theme: Theme) => createStyles({
+	variantInfo: {
+		background: teal[600]
+	}
+}));
+
 
 function App(props: IAppProps) {
 	const { isLogged } = props;
 	const token = null;
-
+	const classes = useStyles(theme);
 	useEffect(() => {
 		props.checkLoggedIn();
 	}, [])
-	
+
 	return (
 		<StyledApp>
 			<ThemeProvider theme={theme}>
-				{!isLogged ? <AuthView /> : <Routes />}
+				<SnackbarProvider
+					maxSnack={5}
+					classes={{variantInfo: classes.variantInfo}}
+					autoHideDuration={5000}
+				>
+					{!isLogged ? <AuthView /> : <Routes />}
+				</SnackbarProvider>
 			</ThemeProvider>
 		</StyledApp>
 	);
