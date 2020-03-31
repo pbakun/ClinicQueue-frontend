@@ -1,8 +1,29 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { RootActions } from "../store/actions";
 import { Paper, Typography, Button, withStyles, Theme, createStyles, TextField, Checkbox, FormControlLabel } from "@material-ui/core";
 import backgroundImg from "../images/background.jpg";
 import ForgotPassword from '../components/Auth/ForgotPassword';
+import { RootState } from '../store/reducers';
+import { ThunkDispatch } from 'redux-thunk';
+import { auth } from '../store/auth/authActions';
+
+interface MuiProps {
+    classes?: any
+}
+
+interface OwnProps {
+    exampleInputProp?: string
+}
+
+interface StoreProps {
+    isLogged?: boolean
+    auth?: (username: string, password: string) => void
+}
+
+type AuthViewProps = MuiProps & OwnProps & StoreProps;
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -14,10 +35,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
 `;
-
-interface IAuthViewProps {
-    classes: any,
-}
 
 const useStyles = ((theme: Theme) => createStyles({
     box: {
@@ -66,71 +83,98 @@ const useStyles = ((theme: Theme) => createStyles({
     }
 }));
 
-const AuthView: React.FunctionComponent<IAuthViewProps> = (props) => {
+const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
     const { classes } = props;
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-  return (
-    <Wrapper>
-        <div className={classes.box}>
-        <Paper elevation={4} className={classes.paper}>
-                <Typography variant="h4" gutterBottom>
-                    System kolejkowy
+    const handleLogin = () => {
+        if (props.auth)
+            props.auth(username, password);
+    }
+
+    const handleKeyUp = (e: any) => {
+        if(e.key === "Enter")
+            handleLogin();
+    }
+
+    return (
+        <Wrapper>
+            <div className={classes.box}>
+                <Paper elevation={4} className={classes.paper}>
+                    <Typography variant="h4" gutterBottom>
+                        System kolejkowy
                 </Typography>
-                <Typography 
-                    variant="h6"
-                    style={{fontWeight: 400,}}
-                >
-                    Logowanie
-                </Typography>
-                <form className={classes.form}>
-                    <TextField
-                        label="Użytkownik"
-                        name="username"
-                        color="primary"
-                        variant="filled"
-                        fullWidth
-                        className={classes.field}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <TextField
-                        label="Hasło"
-                        name="password"
-                        type="password"
-                        color="primary"
-                        variant="filled"
-                        fullWidth
-                        className={classes.field}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <div className={classes.options}>
-                        <FormControlLabel
-                            value={true}
-                            control={
-                                <Checkbox 
-                                    color="primary"
-                                    onChange={e => console.log('e', e.target.value)} />
-                            }
-                            label="Zapamiętaj mnie"
-                            labelPlacement="end"
-                        />
-                        <ForgotPassword />
-                    </div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
+                    <Typography
+                        variant="h6"
+                        style={{ fontWeight: 400, }}
                     >
-                        Zaloguj
+                        Logowanie
+                </Typography>
+                    <form className={classes.form} onKeyUp={handleKeyUp}>
+                        <TextField
+                            label="Użytkownik"
+                            name="username"
+                            color="primary"
+                            variant="filled"
+                            fullWidth
+                            className={classes.field}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <TextField
+                            label="Hasło"
+                            name="password"
+                            type="password"
+                            color="primary"
+                            variant="filled"
+                            fullWidth
+                            className={classes.field}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <div className={classes.options}>
+                            <FormControlLabel
+                                value={true}
+                                control={
+                                    <Checkbox
+                                        color="primary"
+                                        onChange={e => console.log('e', e.target.value)} />
+                                }
+                                label="Zapamiętaj mnie"
+                                labelPlacement="end"
+                            />
+                            <ForgotPassword />
+                        </div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onClick={handleLogin}
+                        >
+                            Zaloguj
                     </Button>
-                </form>
-        </Paper>
-        </div>
-    </Wrapper>
-  );
+                    </form>
+                </Paper>
+            </div>
+        </Wrapper>
+    );
 };
 
-export default withStyles(useStyles)(AuthView);
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+    isLogged: state.auth.isLogged
+})
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<any, any, RootActions>, ownProps: OwnProps
+) => ({
+    auth: (username: string, password: string) => dispatch(auth(username, password)),
+})
+
+export default compose(
+    withStyles(useStyles),
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )
+)(AuthView) as React.ComponentType<AuthViewProps>;

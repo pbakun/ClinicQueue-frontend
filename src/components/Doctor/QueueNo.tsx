@@ -1,11 +1,19 @@
 import * as React from 'react';
-import {withStyles, createStyles, Typography, Fab, Paper, Theme} from "@material-ui/core"; 
+import { withStyles, createStyles, Typography, Fab, Paper, Theme } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
- 
-interface IQueueNoProps {
+
+interface MuiProps {
     classes: any
 }
+
+interface OwnProps {
+    queueMessage: string,
+    onIncrement: () => void,
+    onDecrement: () => void
+}
+
+type IQueueNoProps = MuiProps & OwnProps;
 
 const useStyles = ((theme: Theme) => createStyles({
     paper: {
@@ -30,26 +38,32 @@ const useStyles = ((theme: Theme) => createStyles({
 }));
 
 const QueueNo: React.FunctionComponent<IQueueNoProps> = (props) => {
-    const { classes } = props;
-    
-  return (
-      <Paper square className={classes.paper}>
-          <Typography variant="h6" className={classes.title}>
-              Aktualny pacjent:
+    const { classes, queueMessage } = props;
+
+    return (
+        <Paper square className={classes.paper}>
+            <Typography variant="h6" className={classes.title}>
+                Aktualny pacjent:
           </Typography>
-          <Typography variant="h1" className={classes.queueMessage}>
-                PB1
-          </Typography>
-          <div className={classes.container}>
-          <Fab color="primary">
-              <AddIcon />
-          </Fab>
-          <Fab color="primary">
-              <RemoveIcon />
-          </Fab>
-          </div>
-      </Paper>
-  );
+            <Typography variant="h1" className={classes.queueMessage}>
+                {queueMessage}
+            </Typography>
+            <div className={classes.container}>
+                <Fab
+                    color="primary"
+                    onClick={props.onIncrement}
+                >
+                    <AddIcon />
+                </Fab>
+                <Fab
+                    color="primary"
+                    onClick={props.onDecrement}
+                >
+                    <RemoveIcon />
+                </Fab>
+            </div>
+        </Paper>
+    );
 };
 
 export default withStyles(useStyles)(QueueNo);

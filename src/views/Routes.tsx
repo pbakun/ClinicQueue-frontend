@@ -1,17 +1,19 @@
 import React from 'react';
 import AppBar from "../components/Navigation/AppBar";
 import DoctorView from './DoctorView';
+import HubContextProvider from '../contexts/hub/HubContext';
 
 interface Props {
-    token: String;
 }
 
 export const Routes: React.FC<Props> = props => {
 
     return (
         <React.Fragment>
-            <AppBar />
-            <DoctorView />
+            <HubContextProvider>
+                <AppBar />
+                <DoctorView />
+            </HubContextProvider>
         </React.Fragment>
     );
 }

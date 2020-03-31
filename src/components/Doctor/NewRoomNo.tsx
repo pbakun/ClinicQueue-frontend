@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme, MenuItem } from "@material-ui/core";
 import AssessmentIcon from '@material-ui/icons/Assessment';
 
 interface INewRoomNoProps {
     classes: any,
+    roomNo: string,
+    options: string[],
     onSubmit(value: string): void;
 }
 
@@ -39,11 +41,13 @@ const useStyles = ((theme: Theme) => createStyles({
     }
 }));
 
-const sampleData = ["12c", "test", "16c", "16b"];
-
 const NewRoomNo: React.FunctionComponent<INewRoomNoProps> = (props) => {
-    const { classes, onSubmit } = props;
+    const { classes, roomNo, options, onSubmit } = props;
     const [value, setValue] = useState<string>("");
+
+    useEffect(() => {
+        setValue(roomNo);
+    }, [roomNo])
 
     const handleValueChange = (e: any) => {
         setValue(e.target.value);
@@ -74,8 +78,8 @@ const NewRoomNo: React.FunctionComponent<INewRoomNoProps> = (props) => {
                     }}
                     InputProps={{
                         startAdornment: <AssessmentIcon />,
-                        classes: { 
-                            root: classes.inputBase, 
+                        classes: {
+                            root: classes.inputBase,
                             input: classes.input }
                     }}
                     SelectProps={{
@@ -90,7 +94,7 @@ const NewRoomNo: React.FunctionComponent<INewRoomNoProps> = (props) => {
                     value={value}
                     onChange={handleValueChange}
                 >
-                    {listOptions(sampleData)}
+                    {listOptions(options)}
                 </TextField>
                 <Button
                     color="primary"
