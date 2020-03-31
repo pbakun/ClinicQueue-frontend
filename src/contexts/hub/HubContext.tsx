@@ -67,8 +67,9 @@ class HubContextProvider extends Component<any> {
     }
 
     disconnect = () => {
-        this.setUpCloseConnectionEvent.
-        this._connection.stop();
+        // this.setUpCloseConnectionEvent();
+        this._connection.invoke(routes.sendUserDisconnect);
+        // this._connection.stop();
     }
 
     registerDoctor = (id: string, roomNo: string) => {
