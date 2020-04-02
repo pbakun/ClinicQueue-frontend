@@ -38,7 +38,7 @@ interface OwnProps {
 }
 
 interface StoreProps {
-    username?: string;
+    username?: string|undefined;
     logout?: () => void;
 }
 

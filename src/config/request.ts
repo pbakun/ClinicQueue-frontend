@@ -2,12 +2,23 @@ import axios, { AxiosError } from "axios";
 import instance from "./axios";
 import { RootActions } from "../store/actions";
 import { Dispatch } from "redux";
+import { identityToken } from "../utils/staticData";
 
 const config = {
     headers: {
-        'Content-type': "application/json",
-    },
-    withCredentials: true
+        'Content-Type': "application/json",
+        'Authorization': ""
+    }
+}
+
+export const getToken = () => {
+    return localStorage.getItem(identityToken);
+}
+
+const setConfig = () => {
+    let token = getToken();
+    config.headers.Authorization = "Bearer " + token;
+    return config;
 }
 
 export const get = (
@@ -17,7 +28,7 @@ export const get = (
     error: (error: any) => void
 ) => {
     instance
-        .get(url, config)
+        .get(url, setConfig())
         .then(callback)
         .catch(error);
 }
@@ -30,7 +41,7 @@ export const post = (
     error: (error: any) => void
 ) => {
     instance
-        .post(url, body, config)
+        .post(url, body, setConfig())
         .then(callback)
         .catch(error);
 }
@@ -42,7 +53,7 @@ export const put = (
     error: (error: any) => void
 ) => {
     instance
-        .put(url, body, config)
+        .put(url, body, setConfig())
         .then(callback)
         .catch(error);
 }
@@ -54,7 +65,7 @@ export const remove = (
     error: (error: AxiosError) => void
 ) => {
     instance
-        .delete(url, {...config, data: data})
+        .delete(url, {...setConfig(), data: data})
         .then(callback)
         .catch(error);
 }

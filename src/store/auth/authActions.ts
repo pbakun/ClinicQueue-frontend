@@ -9,9 +9,9 @@ import { serverErrorMessage } from "../../utils/staticData";
 
 const config = {
 	headers: {
-		"Content-type": "application/json"
-	},
-	withCredentials: true
+		"Content-Type": "application/json",
+		"Authorization": ""
+	}
 };
 
 export const login = (dispatch: Dispatch<RootActions>, username: string, token: string) => {
@@ -20,6 +20,7 @@ export const login = (dispatch: Dispatch<RootActions>, username: string, token: 
 		username: username,
 		token: token
 	};
+	localStorage.setItem("token", token);
 		dispatch({
 			type: type.LOGIN,
 			payload: data
@@ -32,6 +33,9 @@ export const logout = () => {
 		username: "",
 		token: undefined
 	};
+	let token = localStorage.getItem("token");
+	config.headers.Authorization = "Bearer " + token;
+	localStorage.removeItem("token");
 	return (dispatch: Dispatch<RootActions>, getState: () => RootState) => {
 		instance
 			.post(
@@ -45,11 +49,15 @@ export const logout = () => {
 					payload: data
 				})
 			})
-			.catch(err => console.error(err));
+			.catch(err => console.error(err))
+			.finally(() => window.location.reload());
 	};
 };
 
 export const auth = (username: string, password: string) => {
+
+	let token = localStorage.getItem("token");
+	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
 		instance
 			.post(
@@ -58,13 +66,15 @@ export const auth = (username: string, password: string) => {
 				config
 			)
 			.then(response => {
-				login(dispatch, response.data.username, response.data.token);
+				login(dispatch, response.data.firstName, response.data.token);
 			})
 			.catch(err => console.error(err));
 	};
 };
 
 export const checkLoggedIn = () => {
+	let token = localStorage.getItem("token");
+	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
 		instance
 			.get(
