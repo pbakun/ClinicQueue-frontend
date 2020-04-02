@@ -1,6 +1,6 @@
 
-// export const hubUrl = "http://localhost:5000/queuehub";
-export const hubUrl = "http://apitest.bakson.hostingasp.pl/queuehub";
+export const hubUrl = "http://localhost:5000/queuehub";
+// export const hubUrl = "http://apitest.bakson.hostingasp.pl/queuehub";
 
 export const receiveQueueNoRoute = "ReceiveQueueNo";
 export const receiveAdditionalInfoRoute = "ReceiveAdditionalInfo";
