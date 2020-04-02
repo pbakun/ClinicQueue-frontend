@@ -11,9 +11,10 @@ import { Routes } from "./views/Routes";
 import AuthView from './views/AuthView';
 import { ThunkDispatch } from 'redux-thunk';
 import { checkLoggedIn } from './store/auth/authActions';
+import { getToken } from './config/request';
 
 interface IAppProps {
-	isLogged: boolean,
+	username?: string
 	checkLoggedIn: () => void
 }
 
@@ -42,12 +43,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 
 function App(props: IAppProps) {
-	const { isLogged } = props;
-	const token = null;
+	const { username } = props;
 	const classes = useStyles(theme);
-	useEffect(() => {
-		props.checkLoggedIn();
-	}, [])
+	const token = getToken();
 
 	return (
 		<StyledApp>
@@ -57,7 +55,7 @@ function App(props: IAppProps) {
 					classes={{variantInfo: classes.variantInfo}}
 					autoHideDuration={5000}
 				>
-					{!isLogged ? <AuthView /> : <Routes />}
+					{!token ? <AuthView /> : <Routes username={username} />}
 				</SnackbarProvider>
 			</ThemeProvider>
 		</StyledApp>
@@ -66,7 +64,7 @@ function App(props: IAppProps) {
 
 const mapStateToProps = (state: RootState) => {
 	return {
-		isLogged: state.auth.isLogged
+		username: state.auth.username
 	}
 }
 

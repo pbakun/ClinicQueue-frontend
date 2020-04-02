@@ -1,5 +1,5 @@
 
-export const identityToken: string = ".AspNetCore.Identity.Application";
+export const identityToken: string = "token";
 
 export const defaultErrorMessage = "Coś poszło nie tak...";
 export const serverErrorMessage = "Błąd serwera";

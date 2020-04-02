@@ -53,7 +53,7 @@ const SpecialButtons: React.FunctionComponent<ISpecialButtonsProps> = (props) =>
                 }}
                 onClick={props.onSpecial}
             >
-                Number specjalny
+                Numer specjalny
             </Button>
         </div>
     </Paper>
