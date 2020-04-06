@@ -27,7 +27,6 @@ const setConfig = () => {
 }
 
 export const get = (
-    // dispatch: Dispatch<RootActions>,
     url: string,
     callback: (response: any) => void,
     errorCallback: (error: any) => void
@@ -45,7 +44,6 @@ export const get = (
 }
 
 export const post = (
-    // dispatch: Dispatch<RootActions>,
     url: string,
     body: any,
     callback: (response: any) => void,
