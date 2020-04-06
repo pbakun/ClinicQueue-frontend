@@ -1,5 +1,4 @@
 
-import { HubConnection } from "@microsoft/signalr";
 
 export interface IQueueContext {
     queueMessage: string,

@@ -1,13 +1,14 @@
 import React from "react";
-import {compose, bindActionCreators, Dispatch} from "redux";
+import { compose } from "redux";
 import { connect } from "react-redux";
 import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from '../../store/reducers';
-import {RootActions} from "../../store/actions"
+import { RootActions } from "../../store/actions";
 import { AppBar, Toolbar, IconButton, Button, createStyles, makeStyles, Theme } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import queueIcon from "../../images/queue.png";
 import { logout } from "../../store/auth/authActions";
+import UserDetailsDialog from "../User/UserDetailsDialog";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     appbar: {
@@ -38,18 +39,16 @@ interface OwnProps {
 }
 
 interface StoreProps {
-    username?: string|undefined;
     logout?: () => void;
 }
 
 type TopBarProps = OwnProps & MuiProps & StoreProps;
 
-const TopBar: React.FC<TopBarProps> = props => {
-    
+const TopBar: React.FC<TopBarProps> = (props) => {
+
     const classes = useStyles();
-    const { username = "Użytkownik"} = props;
     const handleLogout = () => {
-        if(props.logout)
+        if (props.logout)
             props.logout();
     }
 
@@ -60,23 +59,16 @@ const TopBar: React.FC<TopBarProps> = props => {
                     <img src={queueIcon} alt="queue-icon" className={classes.homeButton} />
                 </IconButton>
                 <div className={classes.menuButtons}>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    className={classes.button}
-                >
-                    Lekarz
-                </Button>
-                </div>
-                <div className={classes.userButtons}>
-                <Button
+                    <Button
                         variant="outlined"
                         color="primary"
                         className={classes.button}
-                        startIcon={<AccountCircleIcon />}
                     >
-                        {username}
-                    </Button>
+                        Lekarz
+                </Button>
+                </div>
+                <div className={classes.userButtons}>
+                    <UserDetailsDialog />
                     <Button
                         variant="outlined"
                         color="primary"
@@ -92,7 +84,6 @@ const TopBar: React.FC<TopBarProps> = props => {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    username: state.auth.username
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, RootActions>) => ({
@@ -104,4 +95,4 @@ export default compose(
         mapStateToProps,
         mapDispatchToProps
     )
-    )(TopBar) as React.ComponentType<TopBarProps>;
+)(TopBar) as React.ComponentType<TopBarProps>;

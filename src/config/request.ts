@@ -1,8 +1,9 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import instance from "./axios";
 import { RootActions } from "../store/actions";
 import { Dispatch } from "redux";
 import { identityToken } from "../utils/staticData";
+import { HttpError } from "@microsoft/signalr";
 
 const config = {
     headers: {
@@ -15,6 +16,10 @@ export const getToken = () => {
     return localStorage.getItem(identityToken);
 }
 
+const removeToken = () => {
+    return localStorage.removeItem(identityToken);
+}
+
 const setConfig = () => {
     let token = getToken();
     config.headers.Authorization = "Bearer " + token;
@@ -25,12 +30,18 @@ export const get = (
     // dispatch: Dispatch<RootActions>,
     url: string,
     callback: (response: any) => void,
-    error: (error: any) => void
+    errorCallback: (error: any) => void
 ) => {
     instance
         .get(url, setConfig())
         .then(callback)
-        .catch(error);
+        .catch((error: any ) => {
+            if(error.response.status === 401) {
+                removeToken();
+                window.location.reload();
+            }
+            errorCallback(error);
+        });
 }
 
 export const post = (
@@ -50,22 +61,34 @@ export const put = (
     url: string,
     body: any,
     callback: (response: any) => void,
-    error: (error: any) => void
+    errorCallback: (error: any) => void
 ) => {
     instance
         .put(url, body, setConfig())
         .then(callback)
-        .catch(error);
+        .catch((error: any ) => {
+            if(error.response.status === 401) {
+                removeToken();
+                window.location.reload();
+            }
+            errorCallback(error);
+        });
 }
 
 export const remove = (
     url: string,
     data: any,
     callback: (response: any) => void,
-    error: (error: AxiosError) => void
+    errorCallback: (error: AxiosError) => void
 ) => {
     instance
         .delete(url, {...setConfig(), data: data})
         .then(callback)
-        .catch(error);
+        .catch((error: any ) => {
+            if(error.response.status === 401) {
+                removeToken();
+                window.location.reload();
+            }
+            errorCallback(error);
+        });
 }

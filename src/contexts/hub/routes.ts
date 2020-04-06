@@ -1,5 +1,6 @@
+import { baseUrl } from './../../utils/staticData';
 
-export const hubUrl = "http://localhost:5000/queuehub";
+export const hubUrl = `${baseUrl}/queuehub`;
 // export const hubUrl = "http://apitest.bakson.hostingasp.pl/queuehub";
 
 export const receiveQueueNoRoute = "ReceiveQueueNo";
