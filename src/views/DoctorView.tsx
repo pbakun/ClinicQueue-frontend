@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useReducer} from 'react';
 import { makeStyles, Theme, createStyles, Typography, Divider, Grid } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import QueueNo from '../components/Doctor/QueueNo';
@@ -32,11 +32,11 @@ interface IQueueData {
 }
 
 const initialState: IQueueData = {
-    id: "1",
-    queueNoMessage: "PB12",
-    additionalMessage: "Wiadomość",
-    roomNo: "test",
-    availableRoomNo: ["12", "test", "16"]
+    id: "",
+    queueNoMessage: "",
+    additionalMessage: "",
+    roomNo: "",
+    availableRoomNo: []
 }
 
 const fetchData = (data: any): IQueueData => ({
@@ -45,7 +45,7 @@ const fetchData = (data: any): IQueueData => ({
         additionalMessage: data.additionalInfo,
         roomNo: data.roomNo,
         availableRoomNo: data.availableRoomNo
-})
+});
 
 function DoctorView() {
     const classes = useStyles();

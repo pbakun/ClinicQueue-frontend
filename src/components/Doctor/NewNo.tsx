@@ -62,7 +62,7 @@ const NewNo: React.FunctionComponent<INewNoProps> = (props) => {
                 <TextField
                     color="primary"
                     variant="filled"
-                    label="Nowy numer"
+                    label="Numer"
                     fullWidth
                     InputLabelProps={{
                         classes: { root: classes.label },

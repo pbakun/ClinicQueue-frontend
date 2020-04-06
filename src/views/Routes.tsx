@@ -9,11 +9,10 @@ interface Props {
 }
 
 export const Routes: React.FC<Props> = props => {
-    const { username } = props;
     return (
         <React.Fragment>
             <HubContextProvider>
-                <AppBar username={username} />
+                <AppBar />
                 <DoctorView />
             </HubContextProvider>
         </React.Fragment>
