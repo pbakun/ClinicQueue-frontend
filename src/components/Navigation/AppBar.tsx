@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { ThunkDispatch } from 'redux-thunk';
@@ -9,6 +9,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import queueIcon from "../../images/queue.png";
 import { logout } from "../../store/auth/authActions";
 import UserDetailsDialog from "../User/UserDetailsDialog";
+import RoomSelection from "./RoomSelection";
+import { getRooms } from "../../store/rooms/roomsAction";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     appbar: {
@@ -39,14 +41,22 @@ interface OwnProps {
 }
 
 interface StoreProps {
+    rooms?: string[],
     logout?: () => void;
+    getRooms?: () => void;
 }
 
 type TopBarProps = OwnProps & MuiProps & StoreProps;
 
 const TopBar: React.FC<TopBarProps> = (props) => {
-
+    const { rooms } = props;
     const classes = useStyles();
+
+    useEffect(() => {
+        if(props.getRooms)
+            props.getRooms();
+    }, [])
+
     const handleLogout = () => {
         if (props.logout)
             props.logout();
@@ -65,7 +75,11 @@ const TopBar: React.FC<TopBarProps> = (props) => {
                         className={classes.button}
                     >
                         Lekarz
-                </Button>
+                    </Button>
+                    <RoomSelection
+                        buttonClassName={classes.button}
+                        rooms={rooms}
+                    />
                 </div>
                 <div className={classes.userButtons}>
                     <UserDetailsDialog />
@@ -84,10 +98,12 @@ const TopBar: React.FC<TopBarProps> = (props) => {
 }
 
 const mapStateToProps = (state: RootState) => ({
+    rooms: state.rooms.availableRooms
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, RootActions>) => ({
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    getRooms: () => dispatch(getRooms())
 })
 
 export default compose(
