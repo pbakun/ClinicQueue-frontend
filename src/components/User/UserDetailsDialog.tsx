@@ -10,10 +10,10 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import TabPanel from "../Common/TabPanel";
 import UserDetails from './UserDetails';
 import PasswordChange from "./PasswordChange";
-import { User } from './interface';
+import { User, PasswordChange as IPasswordChange } from './interface';
 import { get, put } from '../../config/request';
 import { useSnackbar } from 'notistack';
-import { userDetailsUpdateSuccess, defaultErrorMessage } from '../../utils/staticData';
+import { userDetailsUpdateSuccess, defaultErrorMessage, passwordChangeSuccess, incorrectPasswordMessage } from '../../utils/staticData';
 
 const useStyles = (theme: Theme) => createStyles({
     closeButton: {
@@ -79,6 +79,19 @@ const UserDetailsDialog: React.FC<IUserDetailsProps> = props => {
         );
     }
 
+    const handlePasswordChangeSubmit = (data: IPasswordChange) => {
+        console.log('data :', data);
+        put(
+            "user/changepassword",
+            data,
+            response => {
+                enqueueSnackbar(passwordChangeSuccess, { variant: "info" });
+                setOpen(false);
+            },
+            error => enqueueSnackbar(incorrectPasswordMessage, { variant: "error"})
+        );
+    }
+
     const handleTabChange = (e: React.ChangeEvent<{}>, newValue: number) => {
         setTab(newValue);
     }
@@ -128,7 +141,7 @@ const UserDetailsDialog: React.FC<IUserDetailsProps> = props => {
                         />
                     </TabPanel>
                     <TabPanel value={tab} index={1}>
-                        <PasswordChange />
+                        <PasswordChange onSubmit={handlePasswordChangeSubmit} />
                     </TabPanel>
                 </DialogContent>
             </Dialog>

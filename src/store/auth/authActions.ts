@@ -1,3 +1,4 @@
+import { setToken, getToken, removeToken, setUsername, removeUsername } from './../../config/request';
 import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
@@ -20,7 +21,8 @@ export const login = (dispatch: Dispatch<RootActions>, username: string, token: 
 		username: username,
 		token: token
 	};
-	localStorage.setItem("token", token);
+	setToken(token);
+	setUsername(username);
 		dispatch({
 			type: type.LOGIN,
 			payload: data
@@ -33,9 +35,10 @@ export const logout = () => {
 		username: "",
 		token: undefined
 	};
-	let token = localStorage.getItem("token");
+	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
-	localStorage.removeItem("token");
+	removeToken();
+	removeUsername();
 	return (dispatch: Dispatch<RootActions>, getState: () => RootState) => {
 		instance
 			.post(
@@ -50,13 +53,13 @@ export const logout = () => {
 				})
 			})
 			.catch(err => console.error(err))
-			.finally(() => window.location.reload());
+			// .finally(() => window.location.reload());
 	};
 };
 
 export const auth = (username: string, password: string) => {
 
-	let token = localStorage.getItem("token");
+	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
 		instance
@@ -73,7 +76,7 @@ export const auth = (username: string, password: string) => {
 };
 
 export const checkLoggedIn = () => {
-	let token = localStorage.getItem("token");
+	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
 		instance

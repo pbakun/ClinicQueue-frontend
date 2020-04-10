@@ -14,7 +14,8 @@ import { checkLoggedIn } from './store/auth/authActions';
 import { getToken } from './config/request';
 
 interface IAppProps {
-	username?: string
+	username?: string,
+	token?: string,
 	checkLoggedIn: () => void
 }
 
@@ -43,9 +44,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 
 function App(props: IAppProps) {
-	const { username } = props;
+	const { username, token } = props;
 	const classes = useStyles(theme);
-	const token = getToken();
 
 	return (
 		<StyledApp>
@@ -64,7 +64,8 @@ function App(props: IAppProps) {
 
 const mapStateToProps = (state: RootState) => {
 	return {
-		username: state.auth.username
+		username: state.auth.username,
+		token: state.auth.token
 	}
 }
 

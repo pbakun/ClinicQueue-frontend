@@ -132,6 +132,7 @@ function DoctorView() {
                     <QueueNo
                         queueMessage={state.queueNoMessage}
                         onIncrement={handleNextNo}
+                        // onIncrement={() => hubContext.disconnect()}
                         onDecrement={handlePrevNo}
                     />
                     <SpecialButtons

@@ -5,3 +5,9 @@ export interface User {
     lastName: string;
     firstName: string;
 }
+
+export interface PasswordChange {
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string
+}

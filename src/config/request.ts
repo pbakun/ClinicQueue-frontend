@@ -13,11 +13,33 @@ const config = {
 }
 
 export const getToken = () => {
-    return localStorage.getItem(identityToken);
+    let token = sessionStorage.getItem(identityToken);
+    if(!token)
+        return "";
+    return token;
 }
 
-const removeToken = () => {
-    return localStorage.removeItem(identityToken);
+export const setToken = (token: string) => {
+    sessionStorage.setItem(identityToken, token);
+}
+
+export const removeToken = () => {
+    return sessionStorage.removeItem(identityToken);
+}
+
+export const setUsername = (username: string) => {
+    sessionStorage.setItem("username", username);
+}
+
+export const getUsername = () => {
+    let token = sessionStorage.getItem("username");
+    if(!token)
+        return "";
+    return token;
+}
+
+export const removeUsername = () => {
+    return sessionStorage.removeItem("username");
 }
 
 const setConfig = () => {
@@ -35,7 +57,7 @@ export const get = (
         .get(url, setConfig())
         .then(callback)
         .catch((error: any ) => {
-            if(error.response.status === 401) {
+            if(error.response && error.response.status === 401) {
                 removeToken();
                 window.location.reload();
             }
@@ -47,12 +69,18 @@ export const post = (
     url: string,
     body: any,
     callback: (response: any) => void,
-    error: (error: any) => void
+    errorCallback: (error: any) => void
 ) => {
     instance
         .post(url, body, setConfig())
         .then(callback)
-        .catch(error);
+        .catch((error: any ) => {
+            if(error.response && error.response.status === 401) {
+                removeToken();
+                window.location.reload();
+            }
+            errorCallback(error);
+        });
 }
 
 export const put = (
@@ -65,7 +93,7 @@ export const put = (
         .put(url, body, setConfig())
         .then(callback)
         .catch((error: any ) => {
-            if(error.response.status === 401) {
+            if(error.response && error.response.status === 401) {
                 removeToken();
                 window.location.reload();
             }
@@ -83,7 +111,7 @@ export const remove = (
         .delete(url, {...setConfig(), data: data})
         .then(callback)
         .catch((error: any ) => {
-            if(error.response.status === 401) {
+            if(error.response && error.response.status === 401) {
                 removeToken();
                 window.location.reload();
             }

@@ -78,7 +78,7 @@ const useStyles = ((theme: Theme) => createStyles({
     options: {
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         width: "100%"
     }
 }));
@@ -134,7 +134,7 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <div className={classes.options}>
-                            <FormControlLabel
+                            {/* <FormControlLabel
                                 value={true}
                                 control={
                                     <Checkbox
@@ -143,7 +143,7 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
                                 }
                                 label="Zapamiętaj mnie"
                                 labelPlacement="end"
-                            />
+                            /> */}
                             <ForgotPassword />
                         </div>
                         <Button
