@@ -18,6 +18,6 @@ export const getRooms = () => {
  const setRooms = (dispatch: Dispatch<RootActions>, rooms: string[]) => {
     dispatch({
         type: type.SET_AVAILABLE_ROOMS,
-        payload: ["12", "13", "14"]
+        payload: rooms
     });
  }

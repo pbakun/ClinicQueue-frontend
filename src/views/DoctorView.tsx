@@ -19,8 +19,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     header: {
         margin: theme.spacing(1),
-        marginLeft: theme.spacing(3)
+        marginLeft: theme.spacing(3),
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-end"
     },
+    roomIndication: {
+        color: "#23635c"
+    }
 }));
 
 interface IQueueData {
@@ -123,9 +129,14 @@ function DoctorView() {
 
     return (
         <div className={classes.container}>
-            <Typography variant="h2" color="primary" className={classes.header}>
-                Kolejka
+            <div className={classes.header}>
+                <Typography variant="h2" color="primary">
+                    Kolejka
                 </Typography>
+                <Typography variant="h6" className={classes.roomIndication}>
+                    Pokój {state.roomNo}
+                </Typography>
+            </div>
             <Divider style={{ height: 2 }} />
             <Grid container direction="row">
                 <Grid item xs={12} sm={6} md={5}>

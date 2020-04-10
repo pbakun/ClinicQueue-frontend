@@ -8,7 +8,7 @@ import backgroundImg from "../images/background.jpg";
 import ForgotPassword from '../components/Auth/ForgotPassword';
 import { RootState } from '../store/reducers';
 import { ThunkDispatch } from 'redux-thunk';
-import { auth } from '../store/auth/authActions';
+import { auth, forgotPassword } from '../store/auth/authActions';
 
 interface MuiProps {
     classes?: any
@@ -21,6 +21,7 @@ interface OwnProps {
 interface StoreProps {
     isLogged?: boolean
     auth?: (username: string, password: string) => void
+    forgotPassword?: (email: string) => void
 }
 
 type AuthViewProps = MuiProps & OwnProps & StoreProps;
@@ -98,6 +99,12 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
             handleLogin();
     }
 
+    const handlePasswordForgotSubmit = (email: string) => {
+        if(props.forgotPassword)
+            props.forgotPassword(email);
+        console.log('email :', email);
+    }
+
     return (
         <Wrapper>
             <div className={classes.box}>
@@ -144,7 +151,9 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
                                 label="Zapamiętaj mnie"
                                 labelPlacement="end"
                             /> */}
-                            <ForgotPassword />
+                            <ForgotPassword
+                                onSubmit={handlePasswordForgotSubmit}
+                            />
                         </div>
                         <Button
                             variant="contained"
@@ -169,6 +178,7 @@ const mapDispatchToProps = (
     dispatch: ThunkDispatch<any, any, RootActions>, ownProps: OwnProps
 ) => ({
     auth: (username: string, password: string) => dispatch(auth(username, password)),
+    forgotPassword: (email: string) => dispatch(forgotPassword(email))
 })
 
 export default compose(

@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { makeStyles, createStyles, Theme, Button, Paper, MenuList,
-         MenuItem, Popper, Grow, ClickAwayListener } from "@material-ui/core";
+import {
+    makeStyles, createStyles, Theme, Button, Paper, MenuList,
+    MenuItem, Popper, ClickAwayListener, Tooltip
+} from "@material-ui/core";
 import { baseUrl } from "../../utils/staticData";
 
 interface IRoomSelection {
@@ -18,7 +20,7 @@ const RoomSelection: React.FunctionComponent<IRoomSelection> = ({ buttonClassNam
     }
 
     const printOptions = (data: string[]) => {
-        if(data.length === 0)
+        if (data.length === 0)
             return <MenuItem disabled>Brak pokoi</MenuItem>
         return data.map(item => {
             return (
@@ -26,7 +28,7 @@ const RoomSelection: React.FunctionComponent<IRoomSelection> = ({ buttonClassNam
                     key={item}
                     onClick={() => handleMenuItemClick(item)}
                 >
-                    {item}
+                    Pok.&nbsp;{item}
                 </MenuItem>
             )
         })
@@ -34,15 +36,21 @@ const RoomSelection: React.FunctionComponent<IRoomSelection> = ({ buttonClassNam
 
     return (
         <React.Fragment>
-            <Button
-                variant="outlined"
-                color="primary"
-                className={buttonClassName}
-                ref={btnRef}
-                onClick={() => setOpen(true)}
+            <Tooltip
+                arrow
+                placement="right-end"
+                title="Pokaż widok kolejki dla wybranego pokoju."
             >
-                Pokoje
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    className={buttonClassName}
+                    ref={btnRef}
+                    onClick={() => setOpen(true)}
+                >
+                    Pokoje
             </Button>
+            </Tooltip>
 
             <Popper
                 open={open}
@@ -61,5 +69,3 @@ const RoomSelection: React.FunctionComponent<IRoomSelection> = ({ buttonClassNam
 }
 
 export default RoomSelection;
-
-const sampleData = ["12", "13", "14"]

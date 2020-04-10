@@ -8,7 +8,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavMessageDialog from './FavMessageDialog';
 import { get, post, remove } from '../../../config/request';
 import { AxiosError } from 'axios';
-import { saveToFavoriteMessage , deletedFromFavoritesMessage, defaultErrorMessage, messageSentToClients } from '../../../utils/staticData';
+import { saveToFavoriteMessage, deletedFromFavoritesMessage, defaultErrorMessage, messageSentToClients } from '../../../utils/staticData';
 
 interface IMessageProps {
     classes: any,
@@ -56,7 +56,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
     const [favMessages, setFavMessages] = useState<string[]>([]);
 
     useEffect(() => {
-        setMsg(additionalMessage);
+        setMsg(additionalMessage ? additionalMessage : "");
         setSent(true);
     }, [additionalMessage]);
 
@@ -74,7 +74,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
         get(
             "/doctor/pickfavmessage",
             (response: any) => setFavMessages(response.data),
-            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error" })
         )
     }
 
@@ -83,7 +83,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
             "/doctor/AddFavoriteMessage",
             { message: msg },
             () => enqueueSnackbar(saveToFavoriteMessage, { variant: "info" }),
-            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error" })
         );
     }
 
@@ -95,20 +95,20 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
                 enqueueSnackbar(messageSentToClients, { variant: "info" });
                 setFavMessageDialog(false);
             },
-            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+            (error: AxiosError) => enqueueSnackbar(defaultErrorMessage, { variant: "error" })
         );
     }
 
     const handleDeleteMessage = (id: string) => {
         remove(
             "/doctor/DeleteFavMessage",
-            {id: id},
+            { id: id },
             (response: any) => {
                 enqueueSnackbar(deletedFromFavoritesMessage, { variant: "info" });
                 setFavMessages(response.data);
             },
             (error: any) => {
-                enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+                enqueueSnackbar(defaultErrorMessage, { variant: "error" })
             }
         );
     }
@@ -147,7 +147,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
                         onClick={handleSaveFavMessage}
                     >
                         Zapisz
-            </Button>
+                    </Button>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -156,7 +156,7 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
                         onClick={handleFavDialogOpen}
                     >
                         Wybierz
-            </Button>
+                    </Button>
                     <Button
                         variant="contained"
                         color={sent ? "default" : "primary"}
@@ -165,16 +165,17 @@ const Message: React.FunctionComponent<IMessageProps> = (props) => {
                         onClick={() => sendMessage(msg)}
                     >
                         Wyślij
-            </Button>
+                    </Button>
                     <Button
                         variant="contained"
                         color="default"
+                        style={{background: "#F88080"}}
                         className={classes.button}
                         startIcon={<ClearAllIcon />}
                         onClick={() => sendMessage("")}
                     >
                         Wyczyść
-            </Button>
+                    </Button>
                 </div>
             </div>
         </Paper>

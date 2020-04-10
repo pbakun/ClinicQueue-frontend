@@ -1,4 +1,4 @@
-import { setToken, getToken, removeToken, setUsername, removeUsername } from './../../config/request';
+import { setToken, getToken, removeToken, setUsername, removeUsername, post } from './../../config/request';
 import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
@@ -75,22 +75,18 @@ export const auth = (username: string, password: string) => {
 	};
 };
 
-export const checkLoggedIn = () => {
-	let token = getToken();
-	config.headers.Authorization = "Bearer " + token;
+export const forgotPassword = (email: string) => {
+	let body = {
+		email: email
+	}
 	return (dispatch: Dispatch<RootActions>) => {
-		instance
-			.get(
-				"auth/status",
-				config
-			)
-			.then(response => {
-				console.log('response', response)
-				login(dispatch, response.data.username, response.data.token);
-			})
-			.catch(err => {
-				console.log('err', err)
-			}
+		post(
+			"auth/forgotpassword",
+			body,
+			response => {
+				alert("Sprawdź email w celu zresetowania hasła!");
+			},
+			error => { }
 		)
-	};
+	}
 }
