@@ -65,7 +65,10 @@ const TopBar: React.FC<TopBarProps> = (props) => {
     return (
         <AppBar position="static" color="default" className={classes.appbar}>
             <Toolbar>
-                <IconButton edge="start" color="inherit" aria-label="menu">
+                <IconButton
+                    edge="start"
+                    onClick={() => window.location.reload()}
+                >
                     <img src={queueIcon} alt="queue-icon" className={classes.homeButton} />
                 </IconButton>
                 <div className={classes.menuButtons}>

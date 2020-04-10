@@ -1,11 +1,17 @@
 import { RootActions } from './../actions';
 import * as type from "../types";
 import { Dispatch } from 'redux';
+import { get } from '../../config/request';
 
 export const getRooms = () => {
-    
     return (dispatch: Dispatch<RootActions>) => {
-        setRooms(dispatch, ["12, 13, test"])
+        get(
+            "home",
+            response => {
+                setRooms(dispatch, response.data);
+            },
+            error => { }
+        )
     }
  }
 
