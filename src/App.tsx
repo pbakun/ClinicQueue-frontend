@@ -56,7 +56,7 @@ function App(props: IAppProps) {
 					autoHideDuration={5000}
 				>
 					<BrowserRouter>
-						<BrowserView>
+						<BrowserView style={{height: "100%"}}>
 							{!token ? <AuthView /> : <Routes />}
 						</BrowserView>
 						<MobileView>

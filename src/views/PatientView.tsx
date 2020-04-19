@@ -37,7 +37,7 @@ const PatientView: React.FC<IPatientViewProps> = (props) => {
         );
         hubContext.registerPatient(urlParam);
         return function cleanup() {
-            hubContext.disconnect();
+            hubContext.connectionStop();
         }
     }, []);
 

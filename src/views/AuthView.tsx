@@ -104,7 +104,6 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
     const handlePasswordForgotSubmit = (email: string) => {
         if (props.forgotPassword)
             props.forgotPassword(email);
-        console.log('email :', email);
     }
 
     return (
@@ -170,7 +169,7 @@ const AuthView: React.FunctionComponent<AuthViewProps> = (props) => {
                                 onClick={handleLogin}
                             >
                                 Zaloguj
-                    </Button>
+                            </Button>
                         </form>
                     </Paper>
                 </Grid>
