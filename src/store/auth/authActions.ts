@@ -1,11 +1,9 @@
-import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
 import { AuthState } from "./interface";
 import { Dispatch } from "redux";
 import * as type from "../types";
 import instance from "../../config/axios";
-import { serverErrorMessage } from "../../utils/staticData";
 
 const config = {
 	headers: {

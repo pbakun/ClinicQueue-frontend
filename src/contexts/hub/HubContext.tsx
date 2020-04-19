@@ -3,11 +3,13 @@ import * as signalR from "@microsoft/signalr";
 import { withSnackbar } from 'notistack';
 import * as routes from "./routes";
 import { IQueueContext } from './IQueueContext';
+import { queueHubConnectionErrorMessage, defaultErrorMessage } from '../../utils/staticData';
 
 const initialContext: IQueueContext = {
     queueMessage: "",
     additionalInfo: "",
-    register: () => { },
+    registerDoctor: () => { },
+    registerPatient: () => { },
     disconnect: () => { },
     nextNo: () => { },
     prevNo: () => { },
@@ -20,11 +22,11 @@ export const HubContext = createContext<IQueueContext>(initialContext);
 
 class HubContextProvider extends Component<any> {
     private _connection: signalR.HubConnection;
-
+    private _manualDisconnected: boolean = false;
     state = {
         queueMessage: "",
         additionalInfo: "",
-        errorCount: 0
+        errorCount: 0,
     }
 
     constructor(props: any) {
@@ -32,26 +34,26 @@ class HubContextProvider extends Component<any> {
         this._connection = new signalR.HubConnectionBuilder().withUrl(routes.hubUrl).build();
         this.setUpReceiveQueueNo();
         this.setUpReceiveAdditionalInfo();
-    }
-
-    async connectionStart(): Promise<void> {
-        await this._connection.start();
+        this.setUpCloseConnectionEvent = this.setUpCloseConnectionEvent.bind(this);
     }
 
     notifyError = () => {
-        this.props.enqueueSnackbar("Błąd połączenia z serwerem kolejki. Próbuje ponownie.", { variant: "error"});
+        this.props.enqueueSnackbar(queueHubConnectionErrorMessage, { variant: "error" });
     }
 
     notifyWarning = () => {
-        this.props.enqueueSnackbar("Coś poszło nie tak...", { variant: "warning"});
+        this.props.enqueueSnackbar(defaultErrorMessage, { variant: "warning" });
     }
 
-    connect = (callback: () => void) => {
+    connect = (callback?: () => void) => {
         this._connection.start()
             .then(() => {
-                this.setUpCloseConnectionEvent(callback);
-                callback();
-                this.setState({errorCount: 0});
+                if (callback) {
+                    this.setUpCloseConnectionEvent(callback);
+                    callback();
+                }
+                else this.setUpCloseConnectionEvent();
+                this.setState({ errorCount: 0 });
             })
             .catch((error: any) => {
                 console.error("hub connect error", error);
@@ -64,12 +66,16 @@ class HubContextProvider extends Component<any> {
                     }
                 });
             });
+
     }
 
     disconnect = () => {
-        // this.setUpCloseConnectionEvent();
-        this._connection.invoke(routes.sendUserDisconnect);
-        // this._connection.stop();
+        this._manualDisconnected = true;
+        this._connection.invoke(routes.sendUserDisconnect)
+            .then(() => {
+                console.info("User Disconnected");
+                this._connection.stop();
+        });
     }
 
     registerDoctor = (id: string, roomNo: string) => {
@@ -80,6 +86,16 @@ class HubContextProvider extends Component<any> {
 
     handleRegisterDoctor(id: string, roomNo: string) {
         this.connect(() => this.registerDoctor(id, roomNo));
+    }
+
+    registerPatient = (roomNo: string) => {
+        this._connection.invoke(routes.sendRegisterPatientRoute, roomNo)
+            .then(() => console.info("View Registered"))
+            .catch(this.notifyWarning);
+    }
+
+    handleRegisterPatient(roomNo: string) {
+        this.connect(() => this.registerPatient(roomNo));
     }
 
     handleNextNo = (id: string, roomNo: string) => {
@@ -120,12 +136,14 @@ class HubContextProvider extends Component<any> {
         });
     }
 
-    setUpCloseConnectionEvent = (callback: () => void) => {
+    setUpCloseConnectionEvent = (callback?: () => void) => {
         this._connection.onclose(() => {
-            console.warn("HubConnection closed");
-            this.connect(callback);
+            if(!this._manualDisconnected)
+                this.connect(callback);
         });
     }
+
+
 
 
     render() {
@@ -133,7 +151,8 @@ class HubContextProvider extends Component<any> {
             <HubContext.Provider value={{
                 queueMessage: this.state.queueMessage,
                 additionalInfo: this.state.additionalInfo,
-                register: this.handleRegisterDoctor.bind(this),
+                registerDoctor: this.handleRegisterDoctor.bind(this),
+                registerPatient: this.handleRegisterPatient.bind(this),
                 disconnect: this.disconnect,
                 nextNo: this.handleNextNo,
                 prevNo: this.handlePrevNo,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Theme, createStyles, makeStyles, Typography } from "@material-ui/core";
-import nfzLogo from "../../images/logo_NFZ.png";
-import cancerTeraphy from "../../images/szybka_terapia_onkologiczna.png";
+import nfzLogo from "../../../images/logo_NFZ.png";
+import cancerTeraphy from "../../../images/szybka_terapia_onkologiczna.png";
 
 
 interface Props {

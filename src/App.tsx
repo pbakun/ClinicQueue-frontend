@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import './App.css';
+import { BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { ThemeProvider, createMuiTheme, makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { teal, lightBlue } from "@material-ui/core/colors";
 import { SnackbarProvider } from "notistack";
+import { BrowserView, MobileView } from "react-device-detect";
 import { RootState } from "./store/reducers";
 import { RootActions } from "./store/actions";
 import { Routes } from "./views/Routes";
@@ -12,6 +14,7 @@ import AuthView from './views/AuthView';
 import { ThunkDispatch } from 'redux-thunk';
 import { checkLoggedIn } from './store/auth/authActions';
 import { getToken } from './config/request';
+import HomeView from './views/HomeView';
 
 interface IAppProps {
 	username?: string
@@ -41,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 	}
 }));
 
-
 function App(props: IAppProps) {
 	const { username } = props;
 	const classes = useStyles(theme);
@@ -52,10 +54,17 @@ function App(props: IAppProps) {
 			<ThemeProvider theme={theme}>
 				<SnackbarProvider
 					maxSnack={5}
-					classes={{variantInfo: classes.variantInfo}}
+					classes={{ variantInfo: classes.variantInfo }}
 					autoHideDuration={5000}
 				>
-					{!token ? <AuthView /> : <Routes username={username} />}
+					<BrowserRouter>
+						<BrowserView>
+							{!token ? <AuthView /> : <Routes />}
+						</BrowserView>
+						<MobileView>
+							<Routes />
+						</MobileView>
+					</BrowserRouter>
 				</SnackbarProvider>
 			</ThemeProvider>
 		</StyledApp>
