@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSnackbar } from "notistack";
-import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme } from "@material-ui/core";
+import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme, Grid } from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import SendIcon from '@material-ui/icons/Send';
@@ -36,14 +36,16 @@ const useStyles = ((theme: Theme) => createStyles({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        width: "100%"
+        width: "100%",
+        flexWrap: "wrap"
     },
     inputField: {
 
     },
     button: {
         color: "#FFF",
-        marginTop: theme.spacing(1)
+        marginTop: theme.spacing(1),
+        minWidth: 100
     }
 }));
 
