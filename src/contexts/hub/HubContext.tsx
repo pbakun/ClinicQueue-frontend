@@ -11,6 +11,7 @@ const initialContext: IQueueContext = {
     registerDoctor: () => { },
     registerPatient: () => { },
     disconnect: () => { },
+    connectionStop: () => { },
     nextNo: () => { },
     prevNo: () => { },
     newNo: () => { },
@@ -76,6 +77,11 @@ class HubContextProvider extends Component<any> {
                 console.info("User Disconnected");
                 this._connection.stop();
         });
+    }
+
+    connectionStop = () => {
+        this._manualDisconnected = true;
+        this._connection.stop().then(() => console.info("Connection stopped"));
     }
 
     registerDoctor = (id: string, roomNo: string) => {
@@ -154,6 +160,7 @@ class HubContextProvider extends Component<any> {
                 registerDoctor: this.handleRegisterDoctor.bind(this),
                 registerPatient: this.handleRegisterPatient.bind(this),
                 disconnect: this.disconnect,
+                connectionStop: this.connectionStop,
                 nextNo: this.handleNextNo,
                 prevNo: this.handlePrevNo,
                 newNo: this.handleNewNo,

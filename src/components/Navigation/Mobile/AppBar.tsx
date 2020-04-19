@@ -2,6 +2,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { ThunkDispatch } from 'redux-thunk';
+import { Link } from "react-router-dom"
 import { RootState } from '../../../store/reducers';
 import { RootActions } from "../../../store/actions";
 import { AppBar, Toolbar, IconButton, Button, createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
@@ -30,6 +31,10 @@ interface MuiProps {
     classes?: any;
 }
 
+interface RouterProps {
+    history: any
+}
+
 interface OwnProps {
 
 }
@@ -51,9 +56,14 @@ const TopBar: React.FC<TopBarProps> = (props) => {
     return (
         <AppBar position="static" color="default" className={classes.appbar}>
             <Toolbar>
-                <IconButton edge="start" color="inherit" aria-label="menu">
+                <Link to="/">
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                >
                     <img src={queueIcon} alt="queue-icon" className={classes.homeButton} />
                 </IconButton>
+                </Link>
                 <Typography
                     variant="subtitle1"
                     className={classes.title}
