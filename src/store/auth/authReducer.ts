@@ -1,10 +1,11 @@
 import * as type from "../types";
 import { AuthState, AuthAction } from "./interface";
+import { getToken, getUsername } from "../../config/request";
 
 const initialState: AuthState = {
     isLogged: false,
-    token: undefined,
-    username: ""
+    token: getToken(),
+    username: getUsername()
 }
 
 export function authReducer(state = initialState, action: AuthAction): AuthState {

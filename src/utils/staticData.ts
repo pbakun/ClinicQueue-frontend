@@ -12,3 +12,6 @@ export const saveToFavoriteMessage = "Zapisano do ulubionych!";
 export const deletedFromFavoritesMessage = "Usunięto z ulubionych.";
 export const messageSentToClients = "Wiadomość przekazana pacjentom!";
 export const roomNoChangedMessage = "Numer pokoju został zmieniony!";
+export const userDetailsUpdateSuccess = "Dane użytkownika zostały zaktualizowane";
+export const passwordChangeSuccess = "Hasło zostało zmienione";
+export const incorrectPasswordMessage = "Nieprawidłowe hasło";

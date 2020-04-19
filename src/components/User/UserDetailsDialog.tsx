@@ -10,6 +10,10 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import TabPanel from "../Common/TabPanel";
 import UserDetails from './UserDetails';
 import PasswordChange from "./PasswordChange";
+import { User, PasswordChange as IPasswordChange } from './interface';
+import { get, put } from '../../config/request';
+import { useSnackbar } from 'notistack';
+import { userDetailsUpdateSuccess, defaultErrorMessage, passwordChangeSuccess, incorrectPasswordMessage } from '../../utils/staticData';
 
 const useStyles = (theme: Theme) => createStyles({
     closeButton: {
@@ -39,10 +43,54 @@ interface StoreProps {
 
 type IUserDetailsProps = IMuiProps & OwnProps & StoreProps;
 
+const initialUser: User = {
+    username: "",
+    email: "",
+    firstName: "",
+    lastName: ""
+}
+
 const UserDetailsDialog: React.FC<IUserDetailsProps> = props => {
     const { classes, username } = props;
+    const { enqueueSnackbar } = useSnackbar();
     const [open, setOpen] = useState<boolean>(false);
     const [tab, setTab] = useState<number>(0);
+    const [user, setUser] = useState<User>(initialUser);
+
+    const handleDialogOpen = () => {
+        get(
+            "user/userdetails",
+            (response: any) => {
+                setUser(response.data);
+            },
+            error => enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+        );
+    }
+
+    const handleUserDetailsSubmit = (newUser: User) => {
+        put(
+            "user/userdetails",
+            newUser,
+            response => {
+                enqueueSnackbar(userDetailsUpdateSuccess, { variant: "info" });
+                setOpen(false);
+            },
+            error => enqueueSnackbar(defaultErrorMessage, { variant: "error"})
+        );
+    }
+
+    const handlePasswordChangeSubmit = (data: IPasswordChange) => {
+        console.log('data :', data);
+        put(
+            "user/changepassword",
+            data,
+            response => {
+                enqueueSnackbar(passwordChangeSuccess, { variant: "info" });
+                setOpen(false);
+            },
+            error => enqueueSnackbar(incorrectPasswordMessage, { variant: "error"})
+        );
+    }
 
     const handleTabChange = (e: React.ChangeEvent<{}>, newValue: number) => {
         setTab(newValue);
@@ -62,12 +110,13 @@ const UserDetailsDialog: React.FC<IUserDetailsProps> = props => {
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
+                onEnter={handleDialogOpen}
                 fullWidth
                 maxWidth="sm"
             >
                 <DialogTitle disableTypography>
                     <Typography variant="h6">
-                        Ulubione wiadomości
+                        Konto użytkownika
                     </Typography>
                     <IconButton
                         className={classes.closeButton}
@@ -86,10 +135,13 @@ const UserDetailsDialog: React.FC<IUserDetailsProps> = props => {
                         <Tab label="Hasło" value={1} />
                     </Tabs>
                     <TabPanel value={tab} index={0}>
-                        <UserDetails />
+                        <UserDetails
+                            user={user}
+                            onSubmit={handleUserDetailsSubmit}
+                        />
                     </TabPanel>
                     <TabPanel value={tab} index={1}>
-                        <PasswordChange />
+                        <PasswordChange onSubmit={handlePasswordChangeSubmit} />
                     </TabPanel>
                 </DialogContent>
             </Dialog>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement } from 'react';
 import { withStyles, createStyles, Theme, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@material-ui/core";
 
 interface IForgotPasswordProps {
     classes: any,
+    onSubmit?: (email: string) => void;
 }
 
 const useStyles = ((theme: Theme) => createStyles({
@@ -16,19 +17,28 @@ const useStyles = ((theme: Theme) => createStyles({
         width: 300
     },
     button: {
-        // color: "#FFF"
+        margin: theme.spacing(1)
+    },
+    buttonSecondary: {
+        color: "#FFF"
     },
     textContent: {
         paddingBottom: theme.spacing(1)
+    },
+    inputField: {
+        minWidth: 300
     }
 }));
 
 const ForgotPassword: React.FunctionComponent<IForgotPasswordProps> = (props) => {
-    const { classes} = props;
+    const { classes, onSubmit} = props;
     const [open, setOpen] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
 
-    const handleSubmit = (e: any) => {
-        e.stopPropagation();
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onSubmit && onSubmit(email);
+        setOpen(false);
     }
 
   return (
@@ -61,8 +71,11 @@ const ForgotPassword: React.FunctionComponent<IForgotPasswordProps> = (props) =>
                     <TextField
                         label="Adres email"
                         color="primary"
-                        variant="outlined"
+                        variant="filled"
                         type="email"
+                        className={classes.inputField}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -70,6 +83,7 @@ const ForgotPassword: React.FunctionComponent<IForgotPasswordProps> = (props) =>
                         variant="contained"
                         color="secondary"
                         className={classes.button}
+                        classes={{ containedSecondary: classes.buttonSecondary}}
                         onClick={() => setOpen(false)}
                     >
                         Anuluj

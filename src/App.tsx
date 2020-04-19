@@ -12,13 +12,12 @@ import { RootActions } from "./store/actions";
 import { Routes } from "./views/Routes";
 import AuthView from './views/AuthView';
 import { ThunkDispatch } from 'redux-thunk';
-import { checkLoggedIn } from './store/auth/authActions';
 import { getToken } from './config/request';
 import HomeView from './views/HomeView';
 
 interface IAppProps {
-	username?: string
-	checkLoggedIn: () => void
+	username?: string,
+	token?: string,
 }
 
 const StyledApp = styled.div`
@@ -45,9 +44,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function App(props: IAppProps) {
-	const { username } = props;
+	const { username, token } = props;
 	const classes = useStyles(theme);
-	const token = getToken();
 
 	return (
 		<StyledApp>
@@ -73,14 +71,14 @@ function App(props: IAppProps) {
 
 const mapStateToProps = (state: RootState) => {
 	return {
-		username: state.auth.username
+		username: state.auth.username,
+		token: state.auth.token
 	}
 }
 
 const mapDispatchToProps = (
 	dispatch: ThunkDispatch<any, any, RootActions>
 ) => ({
-	checkLoggedIn: () => dispatch(checkLoggedIn()),
 })
 
 export default connect(

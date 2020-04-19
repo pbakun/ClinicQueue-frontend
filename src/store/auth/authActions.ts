@@ -1,3 +1,6 @@
+
+import { setToken, getToken, removeToken, setUsername, removeUsername, post } from './../../config/request';
+import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
 import { AuthState } from "./interface";
@@ -18,7 +21,8 @@ export const login = (dispatch: Dispatch<RootActions>, username: string, token: 
 		username: username,
 		token: token
 	};
-	localStorage.setItem("token", token);
+	setToken(token);
+	setUsername(username);
 		dispatch({
 			type: type.LOGIN,
 			payload: data
@@ -31,9 +35,10 @@ export const logout = () => {
 		username: "",
 		token: undefined
 	};
-	let token = localStorage.getItem("token");
+	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
-	localStorage.removeItem("token");
+	removeToken();
+	removeUsername();
 	return (dispatch: Dispatch<RootActions>, getState: () => RootState) => {
 		instance
 			.post(
@@ -48,13 +53,13 @@ export const logout = () => {
 				})
 			})
 			.catch(err => console.error(err))
-			.finally(() => window.location.reload());
+			// .finally(() => window.location.reload());
 	};
 };
 
 export const auth = (username: string, password: string) => {
 
-	let token = localStorage.getItem("token");
+	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
 		instance
@@ -70,22 +75,18 @@ export const auth = (username: string, password: string) => {
 	};
 };
 
-export const checkLoggedIn = () => {
-	let token = localStorage.getItem("token");
-	config.headers.Authorization = "Bearer " + token;
+export const forgotPassword = (email: string) => {
+	let body = {
+		email: email
+	}
 	return (dispatch: Dispatch<RootActions>) => {
-		instance
-			.get(
-				"auth/status",
-				config
-			)
-			.then(response => {
-				console.log('response', response)
-				login(dispatch, response.data.username, response.data.token);
-			})
-			.catch(err => {
-				console.log('err', err)
-			}
+		post(
+			"auth/forgotpassword",
+			body,
+			response => {
+				alert("Sprawdź email w celu zresetowania hasła!");
+			},
+			error => { }
 		)
-	};
+	}
 }
