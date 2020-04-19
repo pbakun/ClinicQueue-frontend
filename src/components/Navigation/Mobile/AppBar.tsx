@@ -5,11 +5,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Link } from "react-router-dom"
 import { RootState } from '../../../store/reducers';
 import { RootActions } from "../../../store/actions";
-import { AppBar, Toolbar, IconButton, Button, createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { AppBar, Toolbar, IconButton, createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
 import queueIcon from "../../../images/queue.png";
 import { logout } from "../../../store/auth/authActions";
-import UserDetailsDialog from "../../User/UserDetailsDialog";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     appbar: {
@@ -31,10 +29,6 @@ interface MuiProps {
     classes?: any;
 }
 
-interface RouterProps {
-    history: any
-}
-
 interface OwnProps {
 
 }
@@ -46,12 +40,7 @@ interface StoreProps {
 type TopBarProps = OwnProps & MuiProps & StoreProps;
 
 const TopBar: React.FC<TopBarProps> = (props) => {
-
     const classes = useStyles();
-    const handleLogout = () => {
-        if (props.logout)
-            props.logout();
-    }
 
     return (
         <AppBar position="static" color="default" className={classes.appbar}>

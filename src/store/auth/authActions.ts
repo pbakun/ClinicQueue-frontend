@@ -1,6 +1,5 @@
-
+import { setLoader } from './../utility/utilityAction';
 import { setToken, getToken, removeToken, setUsername, removeUsername, post } from './../../config/request';
-import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
 import { RootActions } from "./../actions";
 import { AuthState } from "./interface";
@@ -62,6 +61,8 @@ export const auth = (username: string, password: string) => {
 	let token = getToken();
 	config.headers.Authorization = "Bearer " + token;
 	return (dispatch: Dispatch<RootActions>) => {
+		setLoader(dispatch, true);
+
 		instance
 			.post(
 				"auth/login",
@@ -71,7 +72,8 @@ export const auth = (username: string, password: string) => {
 			.then(response => {
 				login(dispatch, response.data.firstName, response.data.token);
 			})
-			.catch(err => console.error(err));
+			.catch(err => console.error(err))
+			.finally(() => setLoader(dispatch, false));
 	};
 };
 

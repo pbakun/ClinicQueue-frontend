@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from 'react';
+import React, { useState } from 'react';
 import { withStyles, createStyles, Theme, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@material-ui/core";
 
 interface IForgotPasswordProps {

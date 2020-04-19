@@ -5,7 +5,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from '../../store/reducers';
 import { RootActions } from "../../store/actions";
 import { AppBar, Toolbar, IconButton, Button, createStyles, makeStyles, Theme } from "@material-ui/core";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import queueIcon from "../../images/queue.png";
 import { logout } from "../../store/auth/authActions";
 import UserDetailsDialog from "../User/UserDetailsDialog";

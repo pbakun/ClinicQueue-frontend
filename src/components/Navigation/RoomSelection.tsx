@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-    makeStyles, createStyles, Theme, Button, Paper, MenuList,
+    Button, Paper, MenuList,
     MenuItem, Popper, ClickAwayListener, Tooltip
 } from "@material-ui/core";
 import { baseUrl } from "../../utils/staticData";
@@ -12,7 +12,7 @@ interface IRoomSelection {
 
 const RoomSelection: React.FunctionComponent<IRoomSelection> = ({ buttonClassName, rooms = [] }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const btnRef = React.useRef<HTMLButtonElement>(null);
+    const btnRef = useRef<HTMLButtonElement>(null);
 
     function handleMenuItemClick(query: string) {
         setOpen(false);
