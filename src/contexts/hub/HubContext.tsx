@@ -8,7 +8,8 @@ import { queueHubConnectionErrorMessage, defaultErrorMessage } from '../../utils
 const initialContext: IQueueContext = {
     queueMessage: "",
     additionalInfo: "",
-    register: () => { },
+    registerDoctor: () => { },
+    registerPatient: () => { },
     disconnect: () => { },
     nextNo: () => { },
     prevNo: () => { },
@@ -75,7 +76,6 @@ class HubContextProvider extends Component<any> {
                 console.info("User Disconnected");
                 this._connection.stop();
         });
-
     }
 
     registerDoctor = (id: string, roomNo: string) => {
@@ -86,6 +86,16 @@ class HubContextProvider extends Component<any> {
 
     handleRegisterDoctor(id: string, roomNo: string) {
         this.connect(() => this.registerDoctor(id, roomNo));
+    }
+
+    registerPatient = (roomNo: string) => {
+        this._connection.invoke(routes.sendRegisterPatientRoute, roomNo)
+            .then(() => console.info("View Registered"))
+            .catch(this.notifyWarning);
+    }
+
+    handleRegisterPatient(roomNo: string) {
+        this.connect(() => this.registerPatient(roomNo));
     }
 
     handleNextNo = (id: string, roomNo: string) => {
@@ -141,7 +151,8 @@ class HubContextProvider extends Component<any> {
             <HubContext.Provider value={{
                 queueMessage: this.state.queueMessage,
                 additionalInfo: this.state.additionalInfo,
-                register: this.handleRegisterDoctor.bind(this),
+                registerDoctor: this.handleRegisterDoctor.bind(this),
+                registerPatient: this.handleRegisterPatient.bind(this),
                 disconnect: this.disconnect,
                 nextNo: this.handleNextNo,
                 prevNo: this.handlePrevNo,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
     createStyles, Theme, DialogTitle, Dialog, DialogContent, Typography,
@@ -109,18 +109,3 @@ const FavMessageDialog: React.FC<FavMessageDialogProps> = (props) => {
 }
 
 export default withStyles(useStyles)(FavMessageDialog);
-
-const sampleData: any[] = [
-    {
-        id: "1",
-        message: "1234"
-    },
-    {
-        id: "3",
-        message: "1234"
-    },
-    {
-        id: "2",
-        message: "1234"
-    }
-]

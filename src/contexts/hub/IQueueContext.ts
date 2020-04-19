@@ -3,7 +3,8 @@
 export interface IQueueContext {
     queueMessage: string,
     additionalInfo: string,
-    register: (id: string, roomNo: string) => void;
+    registerDoctor: (id: string, roomNo: string) => void;
+    registerPatient: (roomNo: string) => void;
     disconnect: () => void;
     nextNo: (id: string, roomNo: string) => void;
     prevNo: (id: string, roomNo: string) => void;

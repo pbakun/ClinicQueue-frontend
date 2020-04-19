@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { ThunkDispatch } from 'redux-thunk';
 import { RootState } from '../../store/reducers';
 import { RootActions } from "../../store/actions";
-import { Dialog, DialogContent, DialogTitle, DialogActions, withStyles, createStyles, Theme, Button, Typography, Tabs, Tab, IconButton } from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, withStyles, createStyles, Theme, Button, Typography, Tabs, Tab, IconButton } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import TabPanel from "../Common/TabPanel";

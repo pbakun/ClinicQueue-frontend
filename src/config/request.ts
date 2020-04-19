@@ -1,9 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import instance from "./axios";
-import { RootActions } from "../store/actions";
-import { Dispatch } from "redux";
 import { identityToken } from "../utils/staticData";
-import { HttpError } from "@microsoft/signalr";
 
 const config = {
     headers: {
@@ -57,11 +54,17 @@ export const get = (
         .get(url, setConfig())
         .then(callback)
         .catch((error: any ) => {
-            if(error.response && error.response.status === 401) {
-                removeToken();
-                window.location.reload();
+            try {
+                if(error.response.status === 401) {
+                    removeToken();
+                    window.location.reload();
+                }
             }
-            errorCallback(error);
+            catch {
+            }
+            finally{
+                errorCallback(error);
+            }
         });
 }
 

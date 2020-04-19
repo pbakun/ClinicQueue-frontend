@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSnackbar } from "notistack";
-import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme, MenuItem } from "@material-ui/core";
+import { withStyles, createStyles, Typography, TextField, Button, Paper, Theme } from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import SendIcon from '@material-ui/icons/Send';

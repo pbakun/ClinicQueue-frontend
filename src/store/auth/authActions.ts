@@ -1,3 +1,4 @@
+
 import { setToken, getToken, removeToken, setUsername, removeUsername, post } from './../../config/request';
 import { useSnackbar } from 'notistack';
 import { RootState } from './../reducers';
@@ -6,7 +7,6 @@ import { AuthState } from "./interface";
 import { Dispatch } from "redux";
 import * as type from "../types";
 import instance from "../../config/axios";
-import { serverErrorMessage } from "../../utils/staticData";
 
 const config = {
 	headers: {

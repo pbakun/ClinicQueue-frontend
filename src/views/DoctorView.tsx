@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useReducer} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles, Theme, createStyles, Typography, Divider, Grid } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import QueueNo from '../components/Doctor/QueueNo';
@@ -9,8 +9,8 @@ import Message from '../components/Doctor/Message/Message';
 import { get, put } from '../config/request';
 import { IQueueContext } from '../contexts/hub/IQueueContext';
 import { HubContext } from '../contexts/hub/HubContext';
-import { AxiosError } from 'axios';
 import { serverErrorMessage, roomNoChangedMessage } from '../utils/staticData';
+import { IQueueData, initialState} from "../interface/IQueueData";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     container: {
@@ -29,28 +29,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }));
 
-interface IQueueData {
-    id: string,
-    queueNoMessage: string,
-    additionalMessage: string,
-    roomNo: string,
-    availableRoomNo: string[]
-}
-
-const initialState: IQueueData = {
-    id: "",
-    queueNoMessage: "",
-    additionalMessage: "",
-    roomNo: "",
-    availableRoomNo: []
-}
-
 const fetchData = (data: any): IQueueData => ({
-        id: data.userId,
-        queueNoMessage: data.queueNoMessage,
-        additionalMessage: data.additionalInfo,
-        roomNo: data.roomNo,
-        availableRoomNo: data.availableRoomNo
+    id: data.userId,
+    queueNoMessage: data.queueNoMessage,
+    additionalMessage: data.additionalInfo,
+    roomNo: data.roomNo,
+    availableRoomNo: data.availableRoomNo
 });
 
 function DoctorView() {
@@ -64,7 +48,7 @@ function DoctorView() {
             "/doctor",
             (response: any) => {
                 setState(fetchData(response.data));
-                hubContext.register(response.data.userId, response.data.roomNo);
+                hubContext.registerDoctor(response.data.userId, response.data.roomNo);
             },
             () => enqueueSnackbar(serverErrorMessage, { variant: "error"})
             );
