@@ -12,12 +12,11 @@ import { RootActions } from "./store/actions";
 import { Routes } from "./views/Routes";
 import AuthView from './views/AuthView';
 import { ThunkDispatch } from 'redux-thunk';
-import { getToken } from './config/request';
-import HomeView from './views/HomeView';
+import Spinner from "./components/Spinner/Spinner";
 
 interface IAppProps {
-	username?: string,
 	token?: string,
+	isLoading: boolean
 }
 
 const StyledApp = styled.div`
@@ -44,12 +43,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function App(props: IAppProps) {
-	const { username, token } = props;
+	const { token, isLoading } = props;
 	const classes = useStyles(theme);
 
 	return (
 		<StyledApp>
 			<ThemeProvider theme={theme}>
+
+				{isLoading && <Spinner />}
+
 				<SnackbarProvider
 					maxSnack={5}
 					classes={{ variantInfo: classes.variantInfo }}
@@ -71,8 +73,8 @@ function App(props: IAppProps) {
 
 const mapStateToProps = (state: RootState) => {
 	return {
-		username: state.auth.username,
-		token: state.auth.token
+		token: state.auth.token,
+		isLoading: state.utility.isLoading
 	}
 }
 

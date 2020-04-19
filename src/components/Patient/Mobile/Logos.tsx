@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, createStyles, Theme, Typography} from "@material-ui/core";
+import { withStyles, createStyles, Theme} from "@material-ui/core";
 import nfzLogo from "../../../images/logo_NFZ.png";
 import cancerTherapyLogo from "../../../images/szybka_terapia_onkologiczna.png";
 

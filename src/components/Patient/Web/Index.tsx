@@ -10,24 +10,6 @@ const StyledApp = styled.div`
   height: 100vh;
   `;
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    container: {
-        display: "flex",
-        justifyContent: "center",
-    },
-    nfzLogo: {
-        position: "absolute",
-        left: 10,
-        top: 10,
-        maxWidth: 400
-    },
-    cancerTeraphy: {
-        position: "absolute",
-        right: 10,
-        top: 10
-    }
-}));
-
 export default function(props: IQueueViewProps) {
     const { doctorName, queueNoMessage } = props;
 

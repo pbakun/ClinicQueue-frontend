@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { MobileView, BrowserView } from "react-device-detect";
-import AppBar from '../components/Navigation/Mobile/AppBar';
+import { MobileView } from "react-device-detect";
 import RoomSelection from '../components/Home/Mobile/RoomSelection';
 import { get } from '../config/request';
 
@@ -27,8 +26,4 @@ const HomeView: React.FC = () => {
     )
 }
 
-HomeView.propTypes = {
-
-}
-
-export default HomeView
+export default HomeView;
