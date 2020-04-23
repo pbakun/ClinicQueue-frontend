@@ -1,6 +1,7 @@
 
 
 export interface IQueueContext {
+    doctorName: string,
     queueMessage: string,
     additionalInfo: string,
     registerDoctor: (id: string, roomNo: string) => void;

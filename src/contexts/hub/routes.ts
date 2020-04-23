@@ -1,10 +1,11 @@
 import { baseUrl } from './../../utils/staticData';
 
-export const hubUrl = `${baseUrl}/queuehub`;
+export const hubUrl = `${baseUrl}/queueHub`;
 
 export const receiveQueueNoRoute = "ReceiveQueueNo";
 export const receiveAdditionalInfoRoute = "ReceiveAdditionalInfo";
 export const receiveQueueOccupiedRoute = "NotifyQueueOccupied";
+export const receiveDoctorFullName = "ReceiveDoctorFullName";
 
 export const sendRegisterDoctorRoute = "RegisterDoctor";
 export const sendRegisterPatientRoute = "RegisterPatientView";
