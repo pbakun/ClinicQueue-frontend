@@ -1,7 +1,7 @@
 
 export const identityToken: string = "token";
-// export const baseUrl = "http://localhost:5000";
-export const baseUrl = "http://api.kolejka.site";
+export const baseUrl = "http://localhost:5000";
+// export const baseUrl = "http://api.kolejka.site";
 // export const baseUrl = "http://apitest.bakson.hostingasp.pl";
 
 export const defaultErrorMessage = "Coś poszło nie tak...";
