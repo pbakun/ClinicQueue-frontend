@@ -1,5 +1,4 @@
 export interface IQueueData {
-    id: string,
     queueNoMessage: string,
     additionalMessage: string,
     roomNo: string,
@@ -8,7 +7,6 @@ export interface IQueueData {
 }
 
 export const initialState: IQueueData = {
-    id: "",
     queueNoMessage: "",
     additionalMessage: "",
     roomNo: "",

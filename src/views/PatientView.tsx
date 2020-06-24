@@ -48,6 +48,13 @@ const PatientView: React.FC<IPatientViewProps> = (props) => {
         });
     }, [hubContext.queueMessage]);
 
+    useEffect(() => {
+        setState({
+            ...state,
+            doctorName: hubContext.doctorName,
+        });
+    }, [hubContext.doctorName]);
+
 
     return (
         <React.Fragment>

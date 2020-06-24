@@ -26,11 +26,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     roomIndication: {
         color: "#23635c"
+    },
+    notification: {
+        color: "#F88080",
+        fontWeight: 600
     }
 }));
 
 const fetchData = (data: any): IQueueData => ({
-    id: data.userId,
     queueNoMessage: data.queueNoMessage,
     additionalMessage: data.additionalInfo,
     roomNo: data.roomNo,
@@ -48,7 +51,7 @@ function DoctorView() {
             "/doctor",
             (response: any) => {
                 setState(fetchData(response.data));
-                hubContext.registerDoctor(response.data.userId, response.data.roomNo);
+                hubContext.registerDoctor(response.data.roomNo);
             },
             () => enqueueSnackbar(serverErrorMessage, { variant: "error"})
             );
@@ -72,23 +75,23 @@ function DoctorView() {
     }, [hubContext.additionalInfo]);
 
     const handleNextNo = () => {
-        hubContext.nextNo(state.id, state.roomNo);
+        hubContext.nextNo(state.roomNo);
     }
 
     const handlePrevNo = () => {
-        hubContext.prevNo(state.id, state.roomNo);
+        hubContext.prevNo(state.roomNo);
     }
 
     const handleNewNo = (value: string) => {
-        hubContext.newNo(state.id, +value, state.roomNo);
+        hubContext.newNo(+value, state.roomNo);
     }
 
     const handleBreakClick = () => {
-        hubContext.newNo(state.id, -1, state.roomNo);
+        hubContext.newNo(-1, state.roomNo);
     }
 
     const handleSpecialClick = () => {
-        hubContext.newNo(state.id, -2, state.roomNo);
+        hubContext.newNo(-2, state.roomNo);
     }
 
     const handleNewRoomNo = (value: string) => {
@@ -96,7 +99,7 @@ function DoctorView() {
             "/doctor/newroomno",
             { NewRoomNo: value },
             (response: any) => {
-                hubContext.newRoomNo(state.id, value);
+                hubContext.newRoomNo(value);
                 enqueueSnackbar(roomNoChangedMessage, { variant: "info"});
                 setState({
                     ...state,
@@ -108,7 +111,7 @@ function DoctorView() {
     }
 
     const handleSendAdditionalMessage = (value: string) => {
-        hubContext.newAdditionalInfo(state.id, state.roomNo, value);
+        hubContext.newAdditionalInfo(state.roomNo, value);
     }
 
     return (
@@ -116,6 +119,9 @@ function DoctorView() {
             <div className={classes.header}>
                 <Typography variant="h2" color="primary">
                     Kolejka
+                </Typography>
+                <Typography variant="body1" className={classes.notification}>
+                    {hubContext.notification}
                 </Typography>
                 <Typography variant="h6" className={classes.roomIndication}>
                     Pokój {state.roomNo}

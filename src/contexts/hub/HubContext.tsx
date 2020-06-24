@@ -4,10 +4,13 @@ import { withSnackbar } from 'notistack';
 import * as routes from "./routes";
 import { IQueueContext } from './IQueueContext';
 import { queueHubConnectionErrorMessage, defaultErrorMessage } from '../../utils/staticData';
+import { getToken } from '../../config/request';
 
 const initialContext: IQueueContext = {
+    doctorName: "",
     queueMessage: "",
     additionalInfo: "",
+    notification: "",
     registerDoctor: () => { },
     registerPatient: () => { },
     disconnect: () => { },
@@ -24,17 +27,24 @@ export const HubContext = createContext<IQueueContext>(initialContext);
 class HubContextProvider extends Component<any> {
     private _connection: signalR.HubConnection;
     private _manualDisconnected: boolean = false;
+    private _token: string = getToken();
     state = {
+        doctorName: "",
         queueMessage: "",
         additionalInfo: "",
+        notification: "",
         errorCount: 0,
     }
 
     constructor(props: any) {
         super(props);
-        this._connection = new signalR.HubConnectionBuilder().withUrl(routes.hubUrl).build();
+        this._connection = new signalR.HubConnectionBuilder()
+                        .withUrl(routes.hubUrl, { accessTokenFactory: () => this._token })
+                        .build();
         this.setUpReceiveQueueNo();
         this.setUpReceiveAdditionalInfo();
+        this.setUpReceiveDoctorFullName();
+        this.setUpNotifyRoomOccupied();
         this.setUpCloseConnectionEvent = this.setUpCloseConnectionEvent.bind(this);
     }
 
@@ -84,14 +94,17 @@ class HubContextProvider extends Component<any> {
         this._connection.stop().then(() => console.info("Connection stopped"));
     }
 
-    registerDoctor = (id: string, roomNo: string) => {
-        this._connection.invoke(routes.sendRegisterDoctorRoute, id, roomNo)
+    registerDoctor = (roomNo: string) => {
+        this._connection.invoke(routes.sendRegisterDoctorRoute, roomNo)
             .then(() => console.info("Doctor registered"))
-            .catch(this.notifyWarning);
+            .catch((error) => {
+                console.error(error)
+                this.notifyWarning();
+            });
     }
 
-    handleRegisterDoctor(id: string, roomNo: string) {
-        this.connect(() => this.registerDoctor(id, roomNo));
+    handleRegisterDoctor(roomNo: string) {
+        this.connect(() => this.registerDoctor(roomNo));
     }
 
     registerPatient = (roomNo: string) => {
@@ -104,29 +117,29 @@ class HubContextProvider extends Component<any> {
         this.connect(() => this.registerPatient(roomNo));
     }
 
-    handleNextNo = (id: string, roomNo: string) => {
-        this._connection.invoke(routes.sendNextNoRoute, id, roomNo)
+    handleNextNo = (roomNo: string) => {
+        this._connection.invoke(routes.sendNextNoRoute, roomNo)
             .catch(this.notifyWarning);
     }
 
-    handlePrevNo = (id: string, roomNo: string) => {
-        this._connection.invoke(routes.sendPrevNoRoute, id, roomNo)
+    handlePrevNo = (roomNo: string) => {
+        this._connection.invoke(routes.sendPrevNoRoute, roomNo)
             .catch(this.notifyWarning);
     }
 
-    handleNewNo = (id: string, queueNo: number, roomNo: string) => {
-        this._connection.invoke(routes.sendNewNoRoute, id, queueNo, roomNo)
+    handleNewNo = (queueNo: number, roomNo: string) => {
+        this._connection.invoke(routes.sendNewNoRoute, queueNo, roomNo)
             .catch(this.notifyWarning);
     }
 
-    handleNewAdditionalInfo = (id: string, roomNo: string, message: string) => {
-        this._connection.invoke(routes.sendAdditionalInfoRoute, id, roomNo, message)
+    handleNewAdditionalInfo = (roomNo: string, message: string) => {
+        this._connection.invoke(routes.sendAdditionalInfoRoute, roomNo, message)
             .catch(this.notifyWarning);
     }
 
-    handleChangeRoomNo = (id: string, newRoomNo: string) => {
+    handleChangeRoomNo = (newRoomNo: string) => {
         this._connection.invoke(routes.sendUserDisconnect)
-            .then(() => this.registerDoctor(id, newRoomNo))
+            .then(() => this.registerDoctor(newRoomNo))
             .catch(this.notifyError);
     }
 
@@ -139,6 +152,19 @@ class HubContextProvider extends Component<any> {
     setUpReceiveAdditionalInfo = () => {
         this._connection.on(routes.receiveAdditionalInfoRoute, (id: any, msg: string) => {
             this.setState({ additionalInfo: msg });
+        });
+    }
+
+    setUpReceiveDoctorFullName = () => {
+        this._connection.on(routes.receiveDoctorFullName, (id: any, msg: string) => {
+            this.setState({doctorName: msg});
+        });
+    }
+
+    setUpNotifyRoomOccupied = () => {
+        this._connection.on(routes.receiveQueueOccupiedRoute, (msg: string) => {
+            console.log('queueOccupied :>> ', msg);
+            this.setState({notification: msg});
         });
     }
 
@@ -155,8 +181,10 @@ class HubContextProvider extends Component<any> {
     render() {
         return (
             <HubContext.Provider value={{
+                doctorName: this.state.doctorName,
                 queueMessage: this.state.queueMessage,
                 additionalInfo: this.state.additionalInfo,
+                notification: this.state.notification,
                 registerDoctor: this.handleRegisterDoctor.bind(this),
                 registerPatient: this.handleRegisterPatient.bind(this),
                 disconnect: this.disconnect,
