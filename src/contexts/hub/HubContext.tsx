@@ -82,11 +82,12 @@ class HubContextProvider extends Component<any> {
 
     disconnect = () => {
         this._manualDisconnected = true;
-        this._connection.invoke(routes.sendUserDisconnect)
-            .then(() => {
-                console.info("User Disconnected");
-                this._connection.stop();
-        });
+        // this._connection.invoke(routes.sendUserDisconnect)
+        //     .then(() => {
+        //         console.info("User Disconnected");
+        //         this._connection.stop();
+        // });
+        this._connection.stop();
     }
 
     connectionStop = () => {
